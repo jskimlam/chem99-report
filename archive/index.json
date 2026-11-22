@@ -6,26 +6,91 @@
       "AN": {
         "md": "chem99_AN_번역_20261120.md",
         "html": "chem99레포트_AN_20261120.html",
-        "pptx": "chem99레포트_AN_20261120_전체_S01-S16.pptx"
+        "pptx": "chem99레포트_AN_20261120_전체_S01-S16.pptx",
+        "thumb": "thumbs/AN.jpg",
+        "kpi": [
+          {
+            "label": "화동 항구 2차 시장",
+            "price": "12,570",
+            "pct": "-2.03%"
+          },
+          {
+            "label": "산둥 시장",
+            "price": "12,180",
+            "pct": "-2.95%"
+          }
+        ]
       },
       "BD": {
         "md": "chem99_BD_번역_20261120.md",
         "html": "chem99레포트_BD_20261120.html",
-        "pptx": "chem99레포트_BD_20261120_전체_S01-S14.pptx"
+        "pptx": "chem99레포트_BD_20261120_전체_S01-S14.pptx",
+        "thumb": "thumbs/BD.jpg",
+        "kpi": [
+          {
+            "label": "산둥 시장",
+            "price": "14,725",
+            "pct": "-1.44%"
+          },
+          {
+            "label": "장쑤·저장 시장",
+            "price": "14,495",
+            "pct": "-0.65%"
+          }
+        ]
       },
       "BPA": {
         "md": "chem99_BPA_번역_20261120.md",
         "html": "chem99레포트_BPA_20261120.html",
-        "pptx": "chem99레포트_BPA_20261120_전체_S01-S14.pptx"
+        "pptx": "chem99레포트_BPA_20261120_전체_S01-S14.pptx",
+        "thumb": "thumbs/BPA.jpg",
+        "kpi": [
+          {
+            "label": "화동",
+            "price": "10,720",
+            "pct": "-3.34%"
+          },
+          {
+            "label": "화북",
+            "price": "10,620",
+            "pct": "-4.07%"
+          }
+        ]
       },
       "MMA": {
         "md": "chem99_MMA_번역_20261120.md",
         "html": "chem99레포트_MMA_20261120.html",
-        "pptx": "chem99레포트_MMA_20261120_전체_S01-S12.pptx"
+        "pptx": "chem99레포트_MMA_20261120_전체_S01-S12.pptx",
+        "thumb": "thumbs/MMA.jpg",
+        "kpi": [
+          {
+            "label": "화동 1급",
+            "price": "12,490",
+            "pct": "-2.95%"
+          },
+          {
+            "label": "화동 무역",
+            "price": "12,570",
+            "pct": "-2.78%"
+          }
+        ]
       },
       "SM": {
         "md": "chem99_SM_번역_20261120.md",
-        "html": "chem99레포트_SM_20261120.html"
+        "html": "chem99레포트_SM_20261120.html",
+        "thumb": "thumbs/SM.jpg",
+        "kpi": [
+          {
+            "label": "장쑤",
+            "price": "10,187",
+            "pct": "+5.46%"
+          },
+          {
+            "label": "광둥",
+            "price": "9,819",
+            "pct": "+2.29%"
+          }
+        ]
       }
     }
   }

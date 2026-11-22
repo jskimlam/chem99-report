@@ -15,6 +15,7 @@ chem99-report/
 │     ├─ chem99레포트_AN_20261120.html
 │     ├─ chem99레포트_AN_20261120_전체_S01-S16.pptx
 │     ├─ chem99_AN_번역_20261120.md
+│     ├─ thumbs/SM.jpg …       # 허브 카드용 첫 쪽 썸네일 (자동 생성)
 │     └─ …
 ├─ scripts/archive.py          # 새 주 추가 · 허브 재생성
 ├─ warroom/index.html          # 기존 Petchem War Room 대시보드 (그대로 이동)
@@ -36,15 +37,17 @@ chem99-report/
 1. 이번 주 파일을 한 폴더에 모읍니다 (예: `~/chem99_0127/`).
 2. 레포 루트에서 실행합니다.
    ```bash
+   pip install playwright pillow && playwright install chromium   # 최초 1회 (썸네일 생성용, 없으면 썸네일만 빠짐)
    python3 scripts/archive.py add ~/chem99_0127
    ```
-   파일이 `archive/YYYY-Wnn/`으로 복사되고 `index.html`·`archive/index.json`이 갱신됩니다. (같은 이름 파일은 덮어씁니다.)
+   파일이 `archive/YYYY-Wnn/`으로 복사되고, HTML 첫 쪽 썸네일이 만들어지며, `index.html`·`archive/index.json`이 갱신됩니다. (같은 이름 파일은 덮어씁니다.)
+   카드의 가격·등락률은 번역본 0절 "가격 데이터" 표의 앞 두 행에서 자동으로 읽습니다.
 3. 커밋·푸시합니다.
    ```bash
    git add -A && git commit -m "2027-W04 주보 추가" && git push
    ```
 
-허브만 다시 만들고 싶으면 `python3 scripts/archive.py build`.
+허브만 다시 만들고 싶으면 `python3 scripts/archive.py build`, 썸네일을 전부 다시 만들려면 `python3 scripts/archive.py thumbs --force`.
 
 ## 보기
 

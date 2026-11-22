@@ -5,29 +5,92 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CHEM99 주간 시황 보고서 아카이브</title>
 <style>
-  body{margin:0;background:#f5f7fa;color:#1a1a1a;font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif}
-  .wrap{max-width:860px;margin:0 auto;padding:28px 18px 60px}
-  h1{margin:0 0 6px;font-size:26px}
-  .sub{color:#595959;font-size:13px;margin-bottom:22px;line-height:1.6}
-  details.wk{background:#fff;border:1px solid #d9d9d9;border-radius:10px;margin-bottom:10px;padding:0 16px}
-  summary{cursor:pointer;padding:14px 0;font-size:16px}
-  .fr{color:#7f7f7f;font-size:12px;margin-left:8px}
-  table{width:100%;border-collapse:collapse;margin:0 0 14px;font-size:14px}
-  th{background:#000;color:#fff;font-weight:700;padding:7px 8px;text-align:left}
-  td{padding:8px;border-bottom:1px solid #d9d9d9}
-  td.pn{font-weight:700}
-  a{color:#0c4270;font-weight:700;text-decoration:none}
-  a:hover{text-decoration:underline}
-  .na{color:#bfbfbf}
-  .foot{margin-top:26px;font-size:12px;color:#7f7f7f;line-height:1.7}
+  :root{--navy:#0C4270;--line:#d9d9d9;--mute:#7f7f7f;--up:#ff0000;--dn:#0000ff}
+  *{box-sizing:border-box}
+  body{margin:0;background:#f3f5f8;color:#1a1a1a;font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif}
+  .top{background:var(--navy);color:#fff;border-bottom:4px solid #000}
+  .top .in{max-width:1180px;margin:0 auto;padding:26px 20px 22px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px}
+  .top h1{margin:0;font-size:27px;letter-spacing:-.3px}
+  .top p{margin:6px 0 0;font-size:13px;color:#cfe0ee;line-height:1.6}
+  .stats{display:flex;gap:10px}
+  .stat{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:8px 14px;text-align:center;min-width:84px}
+  .stat b{display:block;font-size:20px}.stat span{font-size:11px;color:#cfe0ee}
+  .wrap{max-width:1180px;margin:0 auto;padding:18px 20px 60px}
+  .tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;color:#333}
+  .chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  #q{border:1px solid var(--line);border-radius:8px;padding:7px 12px;font:inherit;font-size:13px;width:200px;background:#fff}
+  .wk{margin-bottom:14px}
+  .wh{display:flex;align-items:baseline;gap:12px;margin:6px 2px 10px}
+  .wh h2{margin:0;font-size:21px}
+  .wh em{font-style:normal;font-size:11px;background:#ff0000;color:#fff;border-radius:4px;padding:2px 7px;vertical-align:3px;margin-left:6px}
+  .fr{color:var(--mute);font-size:12px}
+  details.wk{background:#fff;border:1px solid var(--line);border-radius:10px;padding:0 14px}
+  details.wk summary{cursor:pointer;padding:13px 0;display:flex;align-items:baseline;gap:12px;font-size:16px}
+  details.wk[open] summary{border-bottom:1px solid var(--line);margin-bottom:14px}
+  details.wk .grid{padding-bottom:14px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .latest .card:hover{box-shadow:0 6px 18px rgba(12,66,112,.18);transform:translateY(-2px);transition:.15s}
+  .th{display:block;aspect-ratio:4/3;background:#eef1f5;border-bottom:1px solid var(--line);overflow:hidden}
+  .th img{width:100%;height:100%;object-fit:cover;object-position:top left;display:block}
+  .th.noimg{display:flex;align-items:center;justify-content:center;color:#a6adb8;font-size:30px;font-weight:700;text-decoration:none}
+  .cb{padding:12px 13px 13px;display:flex;flex-direction:column;gap:9px;flex:1}
+  .ct{display:flex;align-items:baseline;gap:8px}.ct b{font-size:19px;color:var(--navy)}.ct span{font-size:12px;color:var(--mute)}
+  .kpi{min-height:18px}
+  .kr{display:flex;align-items:baseline;gap:6px;font-size:12.5px;padding:3px 0;border-bottom:1px dashed #e5e5e5}
+  .kl{flex:1;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .kv{font-weight:700}.kp{font-weight:700;min-width:54px;text-align:right}
+  .up{color:var(--up)}.dn{color:var(--dn)}
+  .bt{display:flex;gap:6px;margin-top:auto}
+  .b{flex:1;text-align:center;border:1px solid var(--line);border-radius:7px;padding:7px 4px;font-size:12.5px;font-weight:700;color:var(--navy);text-decoration:none;background:#fff}
+  .b.main{flex:2;background:var(--navy);border-color:var(--navy);color:#fff}
+  .b:hover{filter:brightness(.93)}
+  .empty,.none{color:var(--mute);text-align:center;padding:40px 0}
+  .foot{margin-top:28px;font-size:12px;color:var(--mute);line-height:1.8;text-align:center}
+  .foot a{color:var(--navy);font-weight:700}
+  @media(max-width:560px){.top h1{font-size:22px}.grid{grid-template-columns:repeat(2,1fr);gap:10px}.ct b{font-size:16px}.b{font-size:11.5px}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>CHEM99 주간 시황 보고서 아카이브</h1>
-  <div class="sub">卓创资讯(SCI99) 주보 번역 + 회사양식 HTML 보고서를 주차별(ISO 주차)로 보관합니다. 주차는 기준 금요일 기준이며 원문 회차(제NN기)와 다릅니다.</div>
-  <details class="wk" open><summary><b>2026-W47</b> <span class="fr">기준 금요일 2026-11-20 · 5개 품목</span></summary><table><thead><tr><th>품목</th><th>HTML</th><th>PPT</th><th>번역(MD)</th></tr></thead><tbody><tr><td class="pn">스티렌모노머 (SM)</td><td><a href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_SM_20261120.html">보고서 열기</a></td><td><span class="na">-</span></td><td><a href="archive/2026-W47/chem99_SM_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></td></tr><tr><td class="pn">아크릴로니트릴 (AN)</td><td><a href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_AN_20261120.html">보고서 열기</a></td><td><a href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_AN_20261120_%EC%A0%84%EC%B2%B4_S01-S16.pptx">PPT</a></td><td><a href="archive/2026-W47/chem99_AN_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></td></tr><tr><td class="pn">부타디엔 (BD)</td><td><a href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BD_20261120.html">보고서 열기</a></td><td><a href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BD_20261120_%EC%A0%84%EC%B2%B4_S01-S14.pptx">PPT</a></td><td><a href="archive/2026-W47/chem99_BD_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></td></tr><tr><td class="pn">비스페놀A (BPA)</td><td><a href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BPA_20261120.html">보고서 열기</a></td><td><a href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BPA_20261120_%EC%A0%84%EC%B2%B4_S01-S14.pptx">PPT</a></td><td><a href="archive/2026-W47/chem99_BPA_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></td></tr><tr><td class="pn">메틸메타크릴레이트 (MMA)</td><td><a href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_MMA_20261120.html">보고서 열기</a></td><td><a href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_MMA_20261120_%EC%A0%84%EC%B2%B4_S01-S12.pptx">PPT</a></td><td><a href="archive/2026-W47/chem99_MMA_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></td></tr></tbody></table></details>
-  <div class="foot">이 페이지는 <code>python3 scripts/archive.py build</code> 로 자동 생성됩니다 (직접 수정하지 마세요). 기존 War Room 대시보드는 <a href="warroom/index.html">warroom/</a> 에 있습니다.</div>
-</div>
+<header class="top"><div class="in">
+  <div><h1>CHEM99 주간 시황 보고서 아카이브</h1>
+  <p>卓创资讯(SCI99) 주보 번역 + 회사양식 HTML·PPT 보고서를 주차별(ISO 주차)로 보관합니다.<br>주차는 기준 금요일 기준이며 원문 회차(제NN기)와 다릅니다. 가격은 위안/톤, 등락률은 전주 대비입니다.</p></div>
+  <div class="stats"><div class="stat"><b>2026-W47</b><span>최신 주차</span></div><div class="stat"><b>1</b><span>보관 주차</span></div><div class="stat"><b>5</b><span>보고서</span></div></div>
+</div></header>
+<main class="wrap">
+  <div class="tools"><div class="chips"><button class="chip on" data-f="">전체</button><button class="chip" data-f="SM">SM</button><button class="chip" data-f="AN">AN</button><button class="chip" data-f="BD">BD</button><button class="chip" data-f="BPA">BPA</button><button class="chip" data-f="MMA">MMA</button></div><input id="q" type="search" placeholder="주차·날짜 검색 (예: W47, 2026-11)"></div>
+  <section class="wk latest" data-week="2026-W47 2026-11-20"><div class="wh"><h2>2026-W47 <em>최신</em></h2><span class="fr">기준 금요일 2026-11-20 · 5개 품목</span></div><div class="grid"><article class="card" data-prod="SM"><a class="th" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_SM_20261120.html"><img loading="lazy" src="archive/2026-W47/thumbs/SM.jpg" alt="SM 보고서 첫 쪽"></a><div class="cb"><div class="ct"><b>SM</b><span>스티렌모노머</span></div><div class="kpi"><div class="kr"><span class="kl">장쑤</span><span class="kv">10,187</span><span class="kp up">+5.46%</span></div><div class="kr"><span class="kl">광둥</span><span class="kv">9,819</span><span class="kp up">+2.29%</span></div></div><div class="bt"><a class="b main" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_SM_20261120.html">보고서 열기</a><a class="b" href="archive/2026-W47/chem99_SM_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></div></div></article><article class="card" data-prod="AN"><a class="th" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_AN_20261120.html"><img loading="lazy" src="archive/2026-W47/thumbs/AN.jpg" alt="AN 보고서 첫 쪽"></a><div class="cb"><div class="ct"><b>AN</b><span>아크릴로니트릴</span></div><div class="kpi"><div class="kr"><span class="kl">화동 항구 2차 시장</span><span class="kv">12,570</span><span class="kp dn">-2.03%</span></div><div class="kr"><span class="kl">산둥 시장</span><span class="kv">12,180</span><span class="kp dn">-2.95%</span></div></div><div class="bt"><a class="b main" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_AN_20261120.html">보고서 열기</a><a class="b" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_AN_20261120_%EC%A0%84%EC%B2%B4_S01-S16.pptx">PPT</a><a class="b" href="archive/2026-W47/chem99_AN_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></div></div></article><article class="card" data-prod="BD"><a class="th" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BD_20261120.html"><img loading="lazy" src="archive/2026-W47/thumbs/BD.jpg" alt="BD 보고서 첫 쪽"></a><div class="cb"><div class="ct"><b>BD</b><span>부타디엔</span></div><div class="kpi"><div class="kr"><span class="kl">산둥 시장</span><span class="kv">14,725</span><span class="kp dn">-1.44%</span></div><div class="kr"><span class="kl">장쑤·저장 시장</span><span class="kv">14,495</span><span class="kp dn">-0.65%</span></div></div><div class="bt"><a class="b main" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BD_20261120.html">보고서 열기</a><a class="b" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BD_20261120_%EC%A0%84%EC%B2%B4_S01-S14.pptx">PPT</a><a class="b" href="archive/2026-W47/chem99_BD_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></div></div></article><article class="card" data-prod="BPA"><a class="th" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BPA_20261120.html"><img loading="lazy" src="archive/2026-W47/thumbs/BPA.jpg" alt="BPA 보고서 첫 쪽"></a><div class="cb"><div class="ct"><b>BPA</b><span>비스페놀A</span></div><div class="kpi"><div class="kr"><span class="kl">화동</span><span class="kv">10,720</span><span class="kp dn">-3.34%</span></div><div class="kr"><span class="kl">화북</span><span class="kv">10,620</span><span class="kp dn">-4.07%</span></div></div><div class="bt"><a class="b main" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BPA_20261120.html">보고서 열기</a><a class="b" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BPA_20261120_%EC%A0%84%EC%B2%B4_S01-S14.pptx">PPT</a><a class="b" href="archive/2026-W47/chem99_BPA_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></div></div></article><article class="card" data-prod="MMA"><a class="th" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_MMA_20261120.html"><img loading="lazy" src="archive/2026-W47/thumbs/MMA.jpg" alt="MMA 보고서 첫 쪽"></a><div class="cb"><div class="ct"><b>MMA</b><span>메틸메타크릴레이트</span></div><div class="kpi"><div class="kr"><span class="kl">화동 1급</span><span class="kv">12,490</span><span class="kp dn">-2.95%</span></div><div class="kr"><span class="kl">화동 무역</span><span class="kv">12,570</span><span class="kp dn">-2.78%</span></div></div><div class="bt"><a class="b main" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_MMA_20261120.html">보고서 열기</a><a class="b" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_MMA_20261120_%EC%A0%84%EC%B2%B4_S01-S12.pptx">PPT</a><a class="b" href="archive/2026-W47/chem99_MMA_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></div></div></article></div></section>
+  <p class="none" id="none" hidden>조건에 맞는 항목이 없습니다.</p>
+  <div class="foot">이 페이지는 <code>python3 scripts/archive.py build</code> 로 자동 생성됩니다 (직접 수정하지 마세요).<br>기존 War Room 대시보드는 <a href="warroom/index.html">warroom/</a> 에 있습니다.</div>
+</main>
+<script>
+  // 품목 필터·주차 검색 (화면 표시만 바꾸며 데이터는 그대로)
+  var chips = document.querySelectorAll('.chip'), q = document.getElementById('q'), none = document.getElementById('none');
+  var curF = '';
+  function apply() {
+    var kw = q.value.trim().toLowerCase(), any = false;
+    document.querySelectorAll('.wk').forEach(function (w) {
+      var okW = !kw || (w.dataset.week || '').toLowerCase().indexOf(kw) >= 0, shown = 0;
+      w.querySelectorAll('.card').forEach(function (c) {
+        var ok = okW && (!curF || c.dataset.prod === curF);
+        c.style.display = ok ? '' : 'none';
+        if (ok) shown++;
+      });
+      w.style.display = shown ? '' : 'none';
+      if (shown) any = true;
+      if (shown && w.tagName === 'DETAILS' && (kw || curF)) w.open = true;   // 필터 중에는 접힌 주차도 펼침
+    });
+    none.hidden = any;
+  }
+  chips.forEach(function (b) {
+    b.addEventListener('click', function () {
+      chips.forEach(function (x) { x.classList.remove('on'); });
+      b.classList.add('on'); curF = b.dataset.f; apply();
+    });
+  });
+  q.addEventListener('input', apply);
+</script>
 </body>
 </html>
