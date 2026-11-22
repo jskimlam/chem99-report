@@ -7,7 +7,6 @@
         "md": "chem99_AN_번역_20261120.md",
         "html": "chem99레포트_AN_20261120.html",
         "pptx": "chem99레포트_AN_20261120_전체_S01-S16.pptx",
-        "thumb": "thumbs/AN.jpg",
         "kpi": [
           {
             "label": "화동 항구 2차 시장",
@@ -25,7 +24,6 @@
         "md": "chem99_BD_번역_20261120.md",
         "html": "chem99레포트_BD_20261120.html",
         "pptx": "chem99레포트_BD_20261120_전체_S01-S14.pptx",
-        "thumb": "thumbs/BD.jpg",
         "kpi": [
           {
             "label": "산둥 시장",
@@ -43,7 +41,6 @@
         "md": "chem99_BPA_번역_20261120.md",
         "html": "chem99레포트_BPA_20261120.html",
         "pptx": "chem99레포트_BPA_20261120_전체_S01-S14.pptx",
-        "thumb": "thumbs/BPA.jpg",
         "kpi": [
           {
             "label": "화동",
@@ -61,7 +58,6 @@
         "md": "chem99_MMA_번역_20261120.md",
         "html": "chem99레포트_MMA_20261120.html",
         "pptx": "chem99레포트_MMA_20261120_전체_S01-S12.pptx",
-        "thumb": "thumbs/MMA.jpg",
         "kpi": [
           {
             "label": "화동 1급",
@@ -78,7 +74,6 @@
       "SM": {
         "md": "chem99_SM_번역_20261120.md",
         "html": "chem99레포트_SM_20261120.html",
-        "thumb": "thumbs/SM.jpg",
         "kpi": [
           {
             "label": "장쑤",

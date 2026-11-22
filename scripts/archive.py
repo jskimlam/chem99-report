@@ -1,21 +1,23 @@
 # -*- coding: utf-8 -*-
-# chem99-report 주차별 아카이브 관리 스크립트
+# chem99-report 주차별 아카이브 관리 스크립트 (허브 = 대표 보고서 뷰어 + 주차별 보관함)
 #
-# 설치 (썸네일 생성용 — 없어도 허브는 만들어지고 썸네일만 빠집니다)
-#   pip install playwright pillow
-#   playwright install chromium
+# 설치: 추가 라이브러리 없이 파이썬 3 표준 라이브러리만 사용합니다. (pip install 불필요)
 #
 # 사용법 (레포 루트에서 실행)
-#   python3 scripts/archive.py add <파일이 있는 폴더>   # 새 주 파일을 archive/YYYY-Wnn/ 에 복사 + 썸네일 생성 + 허브 갱신
-#   python3 scripts/archive.py thumbs [--force]         # 없는 썸네일만(--force 면 전부) 다시 생성한 뒤 허브 갱신
+#   python3 scripts/archive.py add <파일이 있는 폴더>   # 새 주 파일을 archive/YYYY-Wnn/ 에 복사한 뒤 허브 갱신
 #   python3 scripts/archive.py build                    # archive/ 를 다시 훑어 허브(index.html)와 archive/index.json 재생성
 #
 # 인식하는 파일 이름 (기준 금요일 YYYYMMDD가 이름에 들어 있어야 함)
-#   chem99레포트_SM_20261120.html             → 회사양식 HTML 보고서
+#   chem99레포트_SM_20261120.html             → 회사양식 HTML 보고서 (허브 뷰어에 표시되는 파일)
 #   chem99레포트_SM_20261120_전체_S01-S21.pptx → PPT 전체 저장본
-#   chem99_SM_번역_20261120.md                → 번역본 (0절 '가격 데이터' 표에서 카드의 가격·등락률을 읽음)
+#   chem99_SM_번역_20261120.md                → 번역본 (0절 '가격 데이터' 표에서 허브의 가격·등락률을 읽음)
 # 주차 폴더 이름은 기준 금요일의 ISO 주차입니다 (예: 2026-11-20 → 2026-W47). 원문 회차(제NN기)와 다릅니다.
-# 썸네일은 HTML 보고서의 첫 쪽(핵심지표)을 캡처해 archive/<주차>/thumbs/<품목>.jpg 로 저장합니다.
+#
+# 허브 동작 요약
+#   - 맨 위 뷰어가 선택한 품목(기본 SM)·주차의 HTML 보고서를 iframe 으로 직접 보여줍니다.
+#   - [▶ 바로 발표] 는 보고서 안의 발표 모드(startPresent)를, [▣ 전체보기] 는 showOverview 를 그대로 호출합니다.
+#   - 보고서 파일은 수정하지 않습니다. 같은 사이트(GitHub Pages) 안에서만 연동되며,
+#     파일을 직접 더블클릭(file://)해서 연 경우에는 새 창 열기로 대신합니다.
 
 import datetime
 import html
@@ -28,12 +30,11 @@ from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parent.parent          # 레포 루트
 ARCHIVE = ROOT / 'archive'                              # 주차별 보관 폴더
-PRODUCTS = ['SM', 'AN', 'BD', 'BPA', 'MMA']             # 허브에 표시할 품목 순서
+PRODUCTS = ['SM', 'AN', 'BD', 'BPA', 'MMA']             # 허브에 표시할 품목 순서 (맨 앞 품목이 기본 대표 보고서)
 PRODUCT_NAME = {                                        # 품목 한글 이름
     'SM': '스티렌모노머', 'AN': '아크릴로니트릴', 'BD': '부타디엔',
     'BPA': '비스페놀A', 'MMA': '메틸메타크릴레이트'
 }
-THUMB_W = 640                                           # 썸네일 가로 픽셀
 # 파일 이름 규칙 (정규식)
 RE_HTML = re.compile(r'^chem99레포트_([A-Za-z0-9]+)_(\d{8})\.html$')
 RE_PPTX = re.compile(r'^chem99레포트_([A-Za-z0-9]+)_(\d{8})_전체_S\d+-S\d+\.pptx$')
@@ -67,7 +68,7 @@ def iso_week_dir(yyyymmdd):
 
 # ------------------------------------------------------------------ 새 주 추가
 def add_week(src):
-    """폴더 안의 보고서 파일을 읽어 archive/YYYY-Wnn/ 으로 복사한 뒤 썸네일·허브를 갱신합니다."""
+    """폴더 안의 보고서 파일을 읽어 archive/YYYY-Wnn/ 으로 복사한 뒤 허브를 갱신합니다."""
     src = Path(src)
     if not src.is_dir():
         fail('폴더를 찾을 수 없습니다: ' + str(src))
@@ -88,60 +89,10 @@ def add_week(src):
         for f in files:
             shutil.copy2(f, dest / f.name)              # 같은 이름이면 덮어씀(재작성 반영)
             print('복사: %s → archive/%s/' % (f.name, wk))
-    make_thumbs(force=False, only_weeks=set(weeks))      # 새로 들어온 주차의 썸네일
     build_index()
 
 
-# ------------------------------------------------------------------ 썸네일
-def make_thumbs(force=False, only_weeks=None):
-    """HTML 보고서 첫 쪽을 캡처해 thumbs/<품목>.jpg 로 저장합니다. playwright·pillow 가 없으면 건너뜁니다."""
-    try:
-        from playwright.sync_api import sync_playwright
-        from PIL import Image
-    except ImportError:
-        print('안내: playwright/pillow 가 설치되어 있지 않아 썸네일 생성을 건너뜁니다. (pip install playwright pillow)')
-        return
-    jobs = []
-    for w in scan():
-        if only_weeks and w['week'] not in only_weeks:
-            continue
-        for prod, p in w['products'].items():
-            if 'html' not in p:
-                continue
-            out = ARCHIVE / w['week'] / 'thumbs' / (prod + '.jpg')
-            if force or not out.exists():
-                jobs.append((ARCHIVE / w['week'] / p['html'], out))
-    if not jobs:
-        print('썸네일: 새로 만들 항목이 없습니다.')
-        return
-    tmp = ROOT / '.thumb_tmp.png'
-    with sync_playwright() as pw:
-        browser = pw.chromium.launch()
-        page = browser.new_page(viewport={'width': 1700, 'height': 1250})
-        for src, out in jobs:
-            try:
-                page.goto(src.resolve().as_uri())
-                page.wait_for_timeout(1500)
-                page.evaluate('() => { if (typeof gotoTab === "function") gotoTab(0); }')   # 첫 쪽(핵심지표)
-                page.wait_for_timeout(400)
-                el = page.query_selector('#slidewrap') or page.query_selector('#stage')
-                if el is None:
-                    print('경고: 슬라이드 영역을 찾지 못했습니다 → ' + src.name)
-                    continue
-                el.screenshot(path=str(tmp))
-                img = Image.open(tmp).convert('RGB')
-                h = int(img.height * THUMB_W / img.width)
-                out.parent.mkdir(parents=True, exist_ok=True)
-                img.resize((THUMB_W, h), Image.LANCZOS).save(out, 'JPEG', quality=82, optimize=True)
-                print('썸네일: ' + str(out.relative_to(ROOT)))
-            except Exception as e:                       # 한 건 실패해도 나머지는 계속
-                print('경고: 썸네일 생성 실패 (%s): %s' % (src.name, e))
-        browser.close()
-    if tmp.exists():
-        tmp.unlink()
-
-
-# ------------------------------------------------------------------ 번역본에서 카드용 가격 읽기
+# ------------------------------------------------------------------ 번역본에서 허브용 가격 읽기
 def md_tables(section):
     """마크다운 절 문자열 → 표 목록(표 = 행 목록, 행 = 칸 문자열 목록)."""
     tabs, cur = [], None
@@ -194,7 +145,7 @@ def read_kpi(md_path):
 
 # ------------------------------------------------------------------ 목록 스캔
 def scan():
-    """archive/ 아래를 훑어 주차별 목록을 만듭니다. 반환: [{week, friday, products:{품목:{html,pptx,md,thumb,kpi}}}] (최신 주 먼저)."""
+    """archive/ 아래를 훑어 주차별 목록을 만듭니다. 반환: [{week, friday, products:{품목:{html,pptx,md,kpi}}}] (최신 주 먼저)."""
     out = []
     if not ARCHIVE.is_dir():
         return out
@@ -210,8 +161,6 @@ def scan():
             friday = friday or ymd
             prods.setdefault(prod, {})[kind] = f.name
         for prod, p in prods.items():
-            if (wd / 'thumbs' / (prod + '.jpg')).exists():
-                p['thumb'] = 'thumbs/' + prod + '.jpg'
             if 'md' in p:
                 p['kpi'] = read_kpi(wd / p['md'])
         if prods:
@@ -235,30 +184,26 @@ def href(week, rel):
     return 'archive/%s/%s' % (week, '/'.join(quote(x) for x in rel.split('/')))
 
 
-def render_card(week, prod, p):
-    """품목 카드 한 장의 HTML."""
+def render_row(week, prod, p):
+    """주차별 보관함의 품목 한 줄 HTML."""
     name = html.escape(PRODUCT_NAME.get(prod, prod))
-    if 'thumb' in p and 'html' in p:
-        thumb = '<a class="th" href="%s"><img loading="lazy" src="%s" alt="%s 보고서 첫 쪽"></a>' % (
-            href(week, p['html']), href(week, p['thumb']), html.escape(prod))
-    elif 'html' in p:
-        thumb = '<a class="th noimg" href="%s"><span>%s</span></a>' % (href(week, p['html']), html.escape(prod))
-    else:
-        thumb = '<div class="th noimg"><span>%s</span></div>' % html.escape(prod)
     kpi = ''
-    for k in p.get('kpi', []):
-        kpi += '<div class="kr"><span class="kl">%s</span><span class="kv">%s</span><span class="kp %s">%s</span></div>' % (
+    for k in p.get('kpi', []):                          # 주요 시장 2곳의 가격·등락률
+        kpi += '<span class="kx"><i>%s</i> <b>%s</b> <em class="%s">%s</em></span>' % (
             html.escape(k['label']), html.escape(k['price']), pct_class(k['pct']), html.escape(k['pct']))
-    btn = []
+    acts = []
     if 'html' in p:
-        btn.append('<a class="b main" href="%s">보고서 열기</a>' % href(week, p['html']))
+        acts.append('<button class="b main view" data-w="%s" data-p="%s">화면에서 보기</button>' % (html.escape(week), html.escape(prod)))
+        acts.append('<a class="b" target="_blank" rel="noopener" href="%s">새 창</a>' % href(week, p['html']))
     if 'pptx' in p:
-        btn.append('<a class="b" href="%s">PPT</a>' % href(week, p['pptx']))
+        acts.append('<a class="b" href="%s">PPT</a>' % href(week, p['pptx']))
+    else:
+        acts.append('<span class="b off" title="이 주차에는 보관된 PPT 파일이 없습니다 (보고서 안의 [PPT 전체] 버튼으로 저장할 수 있습니다)">PPT 없음</span>')
     if 'md' in p:
-        btn.append('<a class="b" href="%s">번역본</a>' % href(week, p['md']))
-    return ('<article class="card" data-prod="%s">%s<div class="cb"><div class="ct"><b>%s</b><span>%s</span></div>'
-            '<div class="kpi">%s</div><div class="bt">%s</div></div></article>') % (
-        html.escape(prod), thumb, html.escape(prod), name, kpi, ''.join(btn))
+        acts.append('<a class="b" href="%s">번역본</a>' % href(week, p['md']))
+    return ('<div class="row" data-prod="%s" data-w="%s"><span class="rp"><b>%s</b><small>%s</small></span>'
+            '<span class="rk">%s</span><span class="ra">%s</span></div>') % (
+        html.escape(prod), html.escape(week), html.escape(prod), name, kpi, ''.join(acts))
 
 
 def render_hub(weeks):
@@ -266,24 +211,20 @@ def render_hub(weeks):
     order = lambda p: PRODUCTS.index(p) if p in PRODUCTS else 99
     n_reports = sum(len(w['products']) for w in weeks)
     secs = []
-    for idx, w in enumerate(weeks):
+    for idx, w in enumerate(weeks):                     # 주차별 보관함 (최신 주는 펼침)
         fr = w['friday']
         fr_txt = '%s-%s-%s' % (fr[:4], fr[4:6], fr[6:8])
-        cards = ''.join(render_card(w['week'], prod, w['products'][prod]) for prod in sorted(w['products'], key=order))
-        label = html.escape(w['week'])
-        if idx == 0:
-            secs.append(
-                '<section class="wk latest" data-week="%s %s"><div class="wh"><h2>%s <em>최신</em></h2>'
-                '<span class="fr">기준 금요일 %s · %d개 품목</span></div><div class="grid">%s</div></section>'
-                % (label, fr_txt, label, fr_txt, len(w['products']), cards))
-        else:
-            secs.append(
-                '<details class="wk" data-week="%s %s"><summary><b>%s</b><span class="fr">기준 금요일 %s · %d개 품목</span></summary>'
-                '<div class="grid">%s</div></details>' % (label, fr_txt, label, fr_txt, len(w['products']), cards))
-    chips = '<button class="chip on" data-f="">전체</button>' + ''.join(
-        '<button class="chip" data-f="%s">%s</button>' % (p, p) for p in PRODUCTS)
+        rows = ''.join(render_row(w['week'], prod, w['products'][prod]) for prod in sorted(w['products'], key=order))
+        secs.append(
+            '<details class="wk"%s data-week="%s %s"><summary><b>%s</b>%s<span class="fr">기준 금요일 %s · %d개 품목</span></summary>'
+            '<div class="rows">%s</div></details>' % (
+                ' open' if idx == 0 else '', html.escape(w['week']), fr_txt, html.escape(w['week']),
+                '<em class="new">최신</em>' if idx == 0 else '', fr_txt, len(w['products']), rows))
     body = ''.join(secs) if secs else '<p class="empty">아직 보관된 주차가 없습니다.</p>'
+    vchips = ''.join('<button class="vchip" data-p="%s">%s</button>' % (p, p) for p in PRODUCTS)
+    filt = '<option value="">전체 품목</option>' + ''.join('<option value="%s">%s</option>' % (p, p) for p in PRODUCTS)
     latest = weeks[0]['week'] if weeks else '-'
+    data = json.dumps({'weeks': weeks, 'order': PRODUCTS, 'names': PRODUCT_NAME}, ensure_ascii=False).replace('</', '<\\/')
     page = '''<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -295,48 +236,60 @@ def render_hub(weeks):
   *{box-sizing:border-box}
   body{margin:0;background:#f3f5f8;color:#1a1a1a;font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif}
   .top{background:var(--navy);color:#fff;border-bottom:4px solid #000}
-  .top .in{max-width:1180px;margin:0 auto;padding:26px 20px 22px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px}
-  .top h1{margin:0;font-size:27px;letter-spacing:-.3px}
-  .top p{margin:6px 0 0;font-size:13px;color:#cfe0ee;line-height:1.6}
+  .top .in{max-width:1180px;margin:0 auto;padding:22px 20px 18px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px}
+  .top h1{margin:0;font-size:26px;letter-spacing:-.3px}
+  .top p{margin:6px 0 0;font-size:12.5px;color:#cfe0ee;line-height:1.6}
   .stats{display:flex;gap:10px}
-  .stat{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:8px 14px;text-align:center;min-width:84px}
-  .stat b{display:block;font-size:20px}.stat span{font-size:11px;color:#cfe0ee}
-  .wrap{max-width:1180px;margin:0 auto;padding:18px 20px 60px}
-  .tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:16px}
-  .chips{display:flex;gap:6px;flex-wrap:wrap}
-  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;color:#333}
-  .chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
-  #q{border:1px solid var(--line);border-radius:8px;padding:7px 12px;font:inherit;font-size:13px;width:200px;background:#fff}
-  .wk{margin-bottom:14px}
-  .wh{display:flex;align-items:baseline;gap:12px;margin:6px 2px 10px}
-  .wh h2{margin:0;font-size:21px}
-  .wh em{font-style:normal;font-size:11px;background:#ff0000;color:#fff;border-radius:4px;padding:2px 7px;vertical-align:3px;margin-left:6px}
-  .fr{color:var(--mute);font-size:12px}
-  details.wk{background:#fff;border:1px solid var(--line);border-radius:10px;padding:0 14px}
-  details.wk summary{cursor:pointer;padding:13px 0;display:flex;align-items:baseline;gap:12px;font-size:16px}
-  details.wk[open] summary{border-bottom:1px solid var(--line);margin-bottom:14px}
-  details.wk .grid{padding-bottom:14px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
-  .card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-  .latest .card:hover{box-shadow:0 6px 18px rgba(12,66,112,.18);transform:translateY(-2px);transition:.15s}
-  .th{display:block;aspect-ratio:4/3;background:#eef1f5;border-bottom:1px solid var(--line);overflow:hidden}
-  .th img{width:100%;height:100%;object-fit:cover;object-position:top left;display:block}
-  .th.noimg{display:flex;align-items:center;justify-content:center;color:#a6adb8;font-size:30px;font-weight:700;text-decoration:none}
-  .cb{padding:12px 13px 13px;display:flex;flex-direction:column;gap:9px;flex:1}
-  .ct{display:flex;align-items:baseline;gap:8px}.ct b{font-size:19px;color:var(--navy)}.ct span{font-size:12px;color:var(--mute)}
-  .kpi{min-height:18px}
-  .kr{display:flex;align-items:baseline;gap:6px;font-size:12.5px;padding:3px 0;border-bottom:1px dashed #e5e5e5}
-  .kl{flex:1;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .kv{font-weight:700}.kp{font-weight:700;min-width:54px;text-align:right}
-  .up{color:var(--up)}.dn{color:var(--dn)}
-  .bt{display:flex;gap:6px;margin-top:auto}
-  .b{flex:1;text-align:center;border:1px solid var(--line);border-radius:7px;padding:7px 4px;font-size:12.5px;font-weight:700;color:var(--navy);text-decoration:none;background:#fff}
-  .b.main{flex:2;background:var(--navy);border-color:var(--navy);color:#fff}
+  .stat{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:7px 14px;text-align:center;min-width:84px}
+  .stat b{display:block;font-size:19px}.stat span{font-size:11px;color:#cfe0ee}
+  .wrap{max-width:1180px;margin:0 auto;padding:16px 20px 60px}
+  /* ---- 대표 보고서 뷰어 ---- */
+  .viewer{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(12,66,112,.10)}
+  .vh{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;background:#fff;border-bottom:1px solid var(--line)}
+  .vlab{font-size:12px;color:var(--mute);margin-right:2px}
+  .vchip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;color:#333}
+  .vchip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .vchip:disabled{opacity:.35;cursor:default}
+  select{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:inherit;font-size:13px;background:#fff}
+  .sp{flex:1}
+  .va{display:flex;flex-wrap:wrap;gap:6px;padding:9px 12px;background:#f7f9fc;border-bottom:1px solid var(--line)}
+  .b{display:inline-block;text-align:center;border:1px solid var(--line);border-radius:7px;padding:7px 14px;font:inherit;font-size:13px;font-weight:700;color:var(--navy);text-decoration:none;background:#fff;cursor:pointer}
+  .b.main{background:var(--navy);border-color:var(--navy);color:#fff}
+  .b.big{padding:8px 18px;font-size:14px}
   .b:hover{filter:brightness(.93)}
+  .b.off,.b:disabled{color:#a6adb8;background:#f1f3f6;cursor:default;filter:none}
+  .vk{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;padding:7px 14px;font-size:13px;border-bottom:1px solid var(--line);background:#fff;min-height:34px}
+  .vk .tt{font-weight:700;color:var(--navy)}
+  .kx i{font-style:normal;color:#555}.kx b{margin:0 2px}.kx em{font-style:normal;font-weight:700}
+  .up{color:var(--up)}.dn{color:var(--dn)}
+  #frame{display:block;width:100%;height:clamp(620px,calc(100vh - 210px),880px);border:0;background:#fff}
+  .vf{padding:7px 14px;font-size:11.5px;color:var(--mute);background:#f7f9fc;border-top:1px solid var(--line);line-height:1.6}
+  /* ---- 주차별 보관함 ---- */
+  .lh{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:22px 2px 10px}
+  .lh h2{margin:0;font-size:19px}
+  #q{border:1px solid var(--line);border-radius:8px;padding:6px 12px;font:inherit;font-size:13px;width:200px;background:#fff}
+  details.wk{background:#fff;border:1px solid var(--line);border-radius:10px;padding:0 14px;margin-bottom:10px}
+  details.wk summary{cursor:pointer;padding:12px 0;display:flex;align-items:baseline;gap:10px;font-size:16px}
+  details.wk[open] summary{border-bottom:1px solid var(--line)}
+  .new{font-style:normal;font-size:11px;background:#ff0000;color:#fff;border-radius:4px;padding:2px 7px}
+  .fr{color:var(--mute);font-size:12px}
+  .row{display:grid;grid-template-columns:150px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px dashed #e5e5e5}
+  .row:last-child{border-bottom:0}
+  .row.cur{background:#eef4fb;margin:0 -14px;padding-left:14px;padding-right:14px}
+  .rp b{font-size:17px;color:var(--navy);margin-right:6px}.rp small{font-size:11.5px;color:var(--mute)}
+  .rk{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px}
+  .ra{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+  .ra .b{padding:5px 10px;font-size:12px}
   .empty,.none{color:var(--mute);text-align:center;padding:40px 0}
-  .foot{margin-top:28px;font-size:12px;color:var(--mute);line-height:1.8;text-align:center}
+  .foot{margin-top:26px;font-size:12px;color:var(--mute);line-height:1.8;text-align:center}
   .foot a{color:var(--navy);font-weight:700}
-  @media(max-width:560px){.top h1{font-size:22px}.grid{grid-template-columns:repeat(2,1fr);gap:10px}.ct b{font-size:16px}.b{font-size:11.5px}}
+  #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#0C4270;color:#fff;padding:10px 18px;border-radius:999px;font-size:13px;box-shadow:0 4px 14px rgba(0,0,0,.25);display:none;z-index:9;max-width:92vw;text-align:center}
+  @media(max-width:700px){
+    .top h1{font-size:21px}
+    #frame{height:78vh;min-height:520px}
+    .row{grid-template-columns:1fr;gap:6px}.ra{justify-content:flex-start}
+    .b.big{flex:1 1 40%}
+  }
 </style>
 </head>
 <body>
@@ -346,42 +299,139 @@ def render_hub(weeks):
   <div class="stats"><div class="stat"><b>@@latest@@</b><span>최신 주차</span></div><div class="stat"><b>@@nw@@</b><span>보관 주차</span></div><div class="stat"><b>@@nr@@</b><span>보고서</span></div></div>
 </div></header>
 <main class="wrap">
-  <div class="tools"><div class="chips">@@chips@@</div><input id="q" type="search" placeholder="주차·날짜 검색 (예: W47, 2026-11)"></div>
+  <section class="viewer" id="viewer">
+    <div class="vh"><span class="vlab">대표 보고서</span>@@vchips@@<span class="sp"></span><span class="vlab">주차</span><select id="vweek"></select></div>
+    <div class="va">
+      <button class="b main big" id="bPres" disabled>▶ 바로 발표</button>
+      <button class="b main big" id="bOv" disabled>▣ 전체보기</button>
+      <a class="b big" id="bNew" target="_blank" rel="noopener" href="#">↗ 새 창으로 열기</a>
+      <span class="sp"></span>
+      <a class="b big" id="bPpt" href="#">PPT</a>
+      <a class="b big" id="bMd" href="#">번역본</a>
+    </div>
+    <div class="vk" id="vk"></div>
+    <iframe id="frame" title="대표 보고서" allow="fullscreen" allowfullscreen></iframe>
+    <div class="vf">발표 중 키: →/Space 다음 · ← 이전 · V 전체보기 · S 단계 등장 · T 전환 · B/W 화면 가림 · L 레이저 · 숫자+Enter 쪽 이동 · Esc 종료 &nbsp;|&nbsp; 전체화면은 브라우저 정책상 버튼을 눌러야 켜지며, 아이폰 Safari 는 창 안 발표로 표시됩니다.</div>
+  </section>
+
+  <div class="lh"><h2>주차별 보관함</h2><span class="sp"></span>
+    <select id="fp">@@filt@@</select>
+    <input id="q" type="search" placeholder="주차·날짜 검색 (예: W47, 2026-11)"></div>
   @@body@@
   <p class="none" id="none" hidden>조건에 맞는 항목이 없습니다.</p>
   <div class="foot">이 페이지는 <code>python3 scripts/archive.py build</code> 로 자동 생성됩니다 (직접 수정하지 마세요).<br>기존 War Room 대시보드는 <a href="warroom/index.html">warroom/</a> 에 있습니다.</div>
 </main>
+<div id="toast"></div>
+<script type="application/json" id="data">@@data@@</script>
 <script>
-  // 품목 필터·주차 검색 (화면 표시만 바꾸며 데이터는 그대로)
-  var chips = document.querySelectorAll('.chip'), q = document.getElementById('q'), none = document.getElementById('none');
-  var curF = '';
+  // 허브 동작: 대표 보고서 뷰어(iframe) 전환·발표·전체보기, 보관함 필터·검색
+  var DATA = JSON.parse(document.getElementById('data').textContent);       // 스크립트가 심어 둔 주차·품목 목록
+  var frame = document.getElementById('frame'), toastEl = document.getElementById('toast');
+  var bPres = document.getElementById('bPres'), bOv = document.getElementById('bOv');
+  var cur = { p: '', w: '' };                                                // 현재 뷰어에 표시 중인 품목·주차
+
+  function toast(msg, ms) {                                                  // 하단 안내 문구
+    toastEl.textContent = msg; toastEl.style.display = 'block';
+    clearTimeout(toast.t); toast.t = setTimeout(function () { toastEl.style.display = 'none'; }, ms || 3500);
+  }
+  function enc(rel) { return rel.split('/').map(encodeURIComponent).join('/'); }   // 한글 파일 이름 인코딩
+  function url(w, file) { return 'archive/' + w + '/' + enc(file); }
+  function findWeek(w) { for (var i = 0; i < DATA.weeks.length; i++) if (DATA.weeks[i].week === w) return DATA.weeks[i]; return null; }
+  function weeksOf(p) {                                                      // 해당 품목 HTML 이 있는 주차들(최신 먼저)
+    return DATA.weeks.filter(function (x) { return x.products[p] && x.products[p].html; });
+  }
+  function pctCls(s) { return /^\\+\\d/.test(s) ? 'up' : (/^-\\d/.test(s) ? 'dn' : ''); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  function setLink(a, href, ok) {                                            // 링크 버튼 활성/비활성
+    if (ok) { a.href = href; a.classList.remove('off'); a.removeAttribute('title'); }
+    else { a.removeAttribute('href'); a.classList.add('off'); }
+  }
+  function show(p, w, scroll) {                                              // 뷰어에 품목·주차 표시
+    var list = weeksOf(p);
+    if (!list.length) { toast(p + ' 보고서가 아직 없습니다.'); return; }
+    var wk = findWeek(w) && findWeek(w).products[p] && findWeek(w).products[p].html ? w : list[0].week;
+    var item = findWeek(wk).products[p];
+    document.querySelectorAll('.vchip').forEach(function (b) { b.classList.toggle('on', b.dataset.p === p); });
+    var sel = document.getElementById('vweek');
+    sel.innerHTML = list.map(function (x) { return '<option value="' + x.week + '">' + x.week + ' (' + x.friday.slice(0, 4) + '-' + x.friday.slice(4, 6) + '-' + x.friday.slice(6) + ')</option>'; }).join('');
+    sel.value = wk;
+    var changed = cur.p !== p || cur.w !== wk;
+    cur = { p: p, w: wk };
+    var u = url(wk, item.html);
+    document.getElementById('bNew').href = u;
+    setLink(document.getElementById('bPpt'), item.pptx ? url(wk, item.pptx) : '', !!item.pptx);
+    if (!item.pptx) document.getElementById('bPpt').title = '이 주차에는 보관된 PPT 파일이 없습니다 (보고서 안의 [PPT 전체] 버튼으로 저장)';
+    setLink(document.getElementById('bMd'), item.md ? url(wk, item.md) : '', !!item.md);
+    var k = (item.kpi || []).map(function (x) { return '<span class="kx"><i>' + esc(x.label) + '</i> <b>' + esc(x.price) + '</b> <em class="' + pctCls(x.pct) + '">' + esc(x.pct) + '</em></span>'; }).join('');
+    document.getElementById('vk').innerHTML = '<span class="tt">' + p + ' · ' + DATA.names[p] + ' · ' + wk + '</span>' + k;
+    document.querySelectorAll('.row').forEach(function (r) { r.classList.toggle('cur', r.dataset.prod === p && r.dataset.w === wk); });
+    if (changed) {                                                           // 같은 보고서면 다시 불러오지 않음
+      bPres.disabled = true; bOv.disabled = true; bOv.textContent = '▣ 전체보기';
+      frame.src = u;
+    }
+    try { history.replaceState(null, '', '?p=' + p + '&w=' + wk); } catch (e) {}
+    if (scroll) document.getElementById('viewer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  frame.addEventListener('load', function () {                               // 보고서가 열리면 버튼 활성화, 쪽 수 표시
+    if (!frame.getAttribute('src')) return;
+    bPres.disabled = false; bOv.disabled = false;
+    try {
+      var n = frame.contentWindow.eval('SLIDES.length');                      // 보고서 안의 쪽 수
+      if (n) bOv.textContent = '▣ 전체보기(' + n + '쪽)';
+    } catch (e) {}
+  });
+  function fallbackOpen(msg) {                                               // 연동이 막힌 경우(file:// 등) 새 창으로 대신
+    window.open(document.getElementById('bNew').href, '_blank');
+    toast(msg, 5000);
+  }
+  function runInReport(fn, label) {                                          // 보고서 안의 함수 호출 (같은 사이트일 때만 가능)
+    var w;
+    try { w = frame.contentWindow; if (typeof w[fn] !== 'function') throw new Error('x'); }
+    catch (e) { fallbackOpen('연동이 막혀 새 창으로 열었습니다. 새 창에서 ' + label + ' 버튼을 눌러 주세요.'); return; }
+    frame.focus(); w.focus();                                                // 방향키·Esc 가 보고서로 전달되도록 포커스 이동
+    w[fn]();
+  }
+  bPres.addEventListener('click', function () { runInReport('startPresent', '[▶ 발표(F5)]'); });   // 클릭 1회로 전체화면 발표
+  bOv.addEventListener('click', function () { runInReport('showOverview', '[▣ 전체보기]'); });
+  document.querySelectorAll('.vchip').forEach(function (b) {                  // 품목 전환 (같은 주차 우선)
+    if (!weeksOf(b.dataset.p).length) b.disabled = true;
+    b.addEventListener('click', function () { show(b.dataset.p, cur.w, false); });
+  });
+  document.getElementById('vweek').addEventListener('change', function (e) { show(cur.p, e.target.value, false); });
+  document.querySelectorAll('.view').forEach(function (b) {                   // 보관함의 [화면에서 보기]
+    b.addEventListener('click', function () { show(b.dataset.p, b.dataset.w, true); });
+  });
+
+  // 보관함 필터·검색 (화면 표시만 바꾸며 데이터는 그대로)
+  var q = document.getElementById('q'), fp = document.getElementById('fp'), none = document.getElementById('none');
   function apply() {
-    var kw = q.value.trim().toLowerCase(), any = false;
-    document.querySelectorAll('.wk').forEach(function (w) {
+    var kw = q.value.trim().toLowerCase(), f = fp.value, any = false;
+    document.querySelectorAll('details.wk').forEach(function (w) {
       var okW = !kw || (w.dataset.week || '').toLowerCase().indexOf(kw) >= 0, shown = 0;
-      w.querySelectorAll('.card').forEach(function (c) {
-        var ok = okW && (!curF || c.dataset.prod === curF);
-        c.style.display = ok ? '' : 'none';
+      w.querySelectorAll('.row').forEach(function (r) {
+        var ok = okW && (!f || r.dataset.prod === f);
+        r.style.display = ok ? '' : 'none';
         if (ok) shown++;
       });
       w.style.display = shown ? '' : 'none';
       if (shown) any = true;
-      if (shown && w.tagName === 'DETAILS' && (kw || curF)) w.open = true;   // 필터 중에는 접힌 주차도 펼침
+      if (shown && (kw || f)) w.open = true;                                  // 필터 중에는 접힌 주차도 펼침
     });
     none.hidden = any;
   }
-  chips.forEach(function (b) {
-    b.addEventListener('click', function () {
-      chips.forEach(function (x) { x.classList.remove('on'); });
-      b.classList.add('on'); curF = b.dataset.f; apply();
-    });
-  });
-  q.addEventListener('input', apply);
+  q.addEventListener('input', apply); fp.addEventListener('change', apply);
+
+  // 처음 표시: 주소의 ?p=SM&w=2026-W47 이 있으면 그것을, 없으면 첫 품목(SM)의 최신 주차
+  var qs = new URLSearchParams(location.search), p0 = qs.get('p');
+  if (!p0 || !weeksOf(p0).length) p0 = DATA.order.filter(function (x) { return weeksOf(x).length; })[0];
+  if (p0) show(p0, qs.get('w') || '', false);
 </script>
 </body>
 </html>
 '''
-    for k, v in (('latest', html.escape(latest)), ('nw', str(len(weeks))), ('nr', str(n_reports)), ('chips', chips), ('body', body)):
+    for k, v in (('latest', html.escape(latest)), ('nw', str(len(weeks))), ('nr', str(n_reports)),
+                 ('vchips', vchips), ('filt', filt), ('body', body), ('data', data)):
         page = page.replace('@@%s@@' % k, v)                     # CSS 의 % 문자와 충돌하지 않도록 치환 방식 사용
     return page
 
@@ -398,13 +448,10 @@ def build_index():
 def main(argv):
     if len(argv) >= 2 and argv[1] == 'build':
         build_index()
-    elif len(argv) >= 2 and argv[1] == 'thumbs':
-        make_thumbs(force='--force' in argv)
-        build_index()
     elif len(argv) >= 3 and argv[1] == 'add':
         add_week(argv[2])
     else:
-        print(__doc__)
+        print('사용법:\n  python3 scripts/archive.py add <파일이 있는 폴더>   # 새 주 파일 복사 + 허브 갱신\n  python3 scripts/archive.py build                   # 허브(index.html) 재생성')
 
 
 if __name__ == '__main__':

@@ -9,48 +9,60 @@
   *{box-sizing:border-box}
   body{margin:0;background:#f3f5f8;color:#1a1a1a;font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif}
   .top{background:var(--navy);color:#fff;border-bottom:4px solid #000}
-  .top .in{max-width:1180px;margin:0 auto;padding:26px 20px 22px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px}
-  .top h1{margin:0;font-size:27px;letter-spacing:-.3px}
-  .top p{margin:6px 0 0;font-size:13px;color:#cfe0ee;line-height:1.6}
+  .top .in{max-width:1180px;margin:0 auto;padding:22px 20px 18px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px}
+  .top h1{margin:0;font-size:26px;letter-spacing:-.3px}
+  .top p{margin:6px 0 0;font-size:12.5px;color:#cfe0ee;line-height:1.6}
   .stats{display:flex;gap:10px}
-  .stat{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:8px 14px;text-align:center;min-width:84px}
-  .stat b{display:block;font-size:20px}.stat span{font-size:11px;color:#cfe0ee}
-  .wrap{max-width:1180px;margin:0 auto;padding:18px 20px 60px}
-  .tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:16px}
-  .chips{display:flex;gap:6px;flex-wrap:wrap}
-  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;color:#333}
-  .chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
-  #q{border:1px solid var(--line);border-radius:8px;padding:7px 12px;font:inherit;font-size:13px;width:200px;background:#fff}
-  .wk{margin-bottom:14px}
-  .wh{display:flex;align-items:baseline;gap:12px;margin:6px 2px 10px}
-  .wh h2{margin:0;font-size:21px}
-  .wh em{font-style:normal;font-size:11px;background:#ff0000;color:#fff;border-radius:4px;padding:2px 7px;vertical-align:3px;margin-left:6px}
-  .fr{color:var(--mute);font-size:12px}
-  details.wk{background:#fff;border:1px solid var(--line);border-radius:10px;padding:0 14px}
-  details.wk summary{cursor:pointer;padding:13px 0;display:flex;align-items:baseline;gap:12px;font-size:16px}
-  details.wk[open] summary{border-bottom:1px solid var(--line);margin-bottom:14px}
-  details.wk .grid{padding-bottom:14px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
-  .card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-  .latest .card:hover{box-shadow:0 6px 18px rgba(12,66,112,.18);transform:translateY(-2px);transition:.15s}
-  .th{display:block;aspect-ratio:4/3;background:#eef1f5;border-bottom:1px solid var(--line);overflow:hidden}
-  .th img{width:100%;height:100%;object-fit:cover;object-position:top left;display:block}
-  .th.noimg{display:flex;align-items:center;justify-content:center;color:#a6adb8;font-size:30px;font-weight:700;text-decoration:none}
-  .cb{padding:12px 13px 13px;display:flex;flex-direction:column;gap:9px;flex:1}
-  .ct{display:flex;align-items:baseline;gap:8px}.ct b{font-size:19px;color:var(--navy)}.ct span{font-size:12px;color:var(--mute)}
-  .kpi{min-height:18px}
-  .kr{display:flex;align-items:baseline;gap:6px;font-size:12.5px;padding:3px 0;border-bottom:1px dashed #e5e5e5}
-  .kl{flex:1;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .kv{font-weight:700}.kp{font-weight:700;min-width:54px;text-align:right}
-  .up{color:var(--up)}.dn{color:var(--dn)}
-  .bt{display:flex;gap:6px;margin-top:auto}
-  .b{flex:1;text-align:center;border:1px solid var(--line);border-radius:7px;padding:7px 4px;font-size:12.5px;font-weight:700;color:var(--navy);text-decoration:none;background:#fff}
-  .b.main{flex:2;background:var(--navy);border-color:var(--navy);color:#fff}
+  .stat{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:7px 14px;text-align:center;min-width:84px}
+  .stat b{display:block;font-size:19px}.stat span{font-size:11px;color:#cfe0ee}
+  .wrap{max-width:1180px;margin:0 auto;padding:16px 20px 60px}
+  /* ---- 대표 보고서 뷰어 ---- */
+  .viewer{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(12,66,112,.10)}
+  .vh{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;background:#fff;border-bottom:1px solid var(--line)}
+  .vlab{font-size:12px;color:var(--mute);margin-right:2px}
+  .vchip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;color:#333}
+  .vchip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .vchip:disabled{opacity:.35;cursor:default}
+  select{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:inherit;font-size:13px;background:#fff}
+  .sp{flex:1}
+  .va{display:flex;flex-wrap:wrap;gap:6px;padding:9px 12px;background:#f7f9fc;border-bottom:1px solid var(--line)}
+  .b{display:inline-block;text-align:center;border:1px solid var(--line);border-radius:7px;padding:7px 14px;font:inherit;font-size:13px;font-weight:700;color:var(--navy);text-decoration:none;background:#fff;cursor:pointer}
+  .b.main{background:var(--navy);border-color:var(--navy);color:#fff}
+  .b.big{padding:8px 18px;font-size:14px}
   .b:hover{filter:brightness(.93)}
+  .b.off,.b:disabled{color:#a6adb8;background:#f1f3f6;cursor:default;filter:none}
+  .vk{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;padding:7px 14px;font-size:13px;border-bottom:1px solid var(--line);background:#fff;min-height:34px}
+  .vk .tt{font-weight:700;color:var(--navy)}
+  .kx i{font-style:normal;color:#555}.kx b{margin:0 2px}.kx em{font-style:normal;font-weight:700}
+  .up{color:var(--up)}.dn{color:var(--dn)}
+  #frame{display:block;width:100%;height:clamp(620px,calc(100vh - 210px),880px);border:0;background:#fff}
+  .vf{padding:7px 14px;font-size:11.5px;color:var(--mute);background:#f7f9fc;border-top:1px solid var(--line);line-height:1.6}
+  /* ---- 주차별 보관함 ---- */
+  .lh{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:22px 2px 10px}
+  .lh h2{margin:0;font-size:19px}
+  #q{border:1px solid var(--line);border-radius:8px;padding:6px 12px;font:inherit;font-size:13px;width:200px;background:#fff}
+  details.wk{background:#fff;border:1px solid var(--line);border-radius:10px;padding:0 14px;margin-bottom:10px}
+  details.wk summary{cursor:pointer;padding:12px 0;display:flex;align-items:baseline;gap:10px;font-size:16px}
+  details.wk[open] summary{border-bottom:1px solid var(--line)}
+  .new{font-style:normal;font-size:11px;background:#ff0000;color:#fff;border-radius:4px;padding:2px 7px}
+  .fr{color:var(--mute);font-size:12px}
+  .row{display:grid;grid-template-columns:150px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px dashed #e5e5e5}
+  .row:last-child{border-bottom:0}
+  .row.cur{background:#eef4fb;margin:0 -14px;padding-left:14px;padding-right:14px}
+  .rp b{font-size:17px;color:var(--navy);margin-right:6px}.rp small{font-size:11.5px;color:var(--mute)}
+  .rk{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px}
+  .ra{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+  .ra .b{padding:5px 10px;font-size:12px}
   .empty,.none{color:var(--mute);text-align:center;padding:40px 0}
-  .foot{margin-top:28px;font-size:12px;color:var(--mute);line-height:1.8;text-align:center}
+  .foot{margin-top:26px;font-size:12px;color:var(--mute);line-height:1.8;text-align:center}
   .foot a{color:var(--navy);font-weight:700}
-  @media(max-width:560px){.top h1{font-size:22px}.grid{grid-template-columns:repeat(2,1fr);gap:10px}.ct b{font-size:16px}.b{font-size:11.5px}}
+  #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#0C4270;color:#fff;padding:10px 18px;border-radius:999px;font-size:13px;box-shadow:0 4px 14px rgba(0,0,0,.25);display:none;z-index:9;max-width:92vw;text-align:center}
+  @media(max-width:700px){
+    .top h1{font-size:21px}
+    #frame{height:78vh;min-height:520px}
+    .row{grid-template-columns:1fr;gap:6px}.ra{justify-content:flex-start}
+    .b.big{flex:1 1 40%}
+  }
 </style>
 </head>
 <body>
@@ -60,37 +72,133 @@
   <div class="stats"><div class="stat"><b>2026-W47</b><span>최신 주차</span></div><div class="stat"><b>1</b><span>보관 주차</span></div><div class="stat"><b>5</b><span>보고서</span></div></div>
 </div></header>
 <main class="wrap">
-  <div class="tools"><div class="chips"><button class="chip on" data-f="">전체</button><button class="chip" data-f="SM">SM</button><button class="chip" data-f="AN">AN</button><button class="chip" data-f="BD">BD</button><button class="chip" data-f="BPA">BPA</button><button class="chip" data-f="MMA">MMA</button></div><input id="q" type="search" placeholder="주차·날짜 검색 (예: W47, 2026-11)"></div>
-  <section class="wk latest" data-week="2026-W47 2026-11-20"><div class="wh"><h2>2026-W47 <em>최신</em></h2><span class="fr">기준 금요일 2026-11-20 · 5개 품목</span></div><div class="grid"><article class="card" data-prod="SM"><a class="th" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_SM_20261120.html"><img loading="lazy" src="archive/2026-W47/thumbs/SM.jpg" alt="SM 보고서 첫 쪽"></a><div class="cb"><div class="ct"><b>SM</b><span>스티렌모노머</span></div><div class="kpi"><div class="kr"><span class="kl">장쑤</span><span class="kv">10,187</span><span class="kp up">+5.46%</span></div><div class="kr"><span class="kl">광둥</span><span class="kv">9,819</span><span class="kp up">+2.29%</span></div></div><div class="bt"><a class="b main" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_SM_20261120.html">보고서 열기</a><a class="b" href="archive/2026-W47/chem99_SM_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></div></div></article><article class="card" data-prod="AN"><a class="th" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_AN_20261120.html"><img loading="lazy" src="archive/2026-W47/thumbs/AN.jpg" alt="AN 보고서 첫 쪽"></a><div class="cb"><div class="ct"><b>AN</b><span>아크릴로니트릴</span></div><div class="kpi"><div class="kr"><span class="kl">화동 항구 2차 시장</span><span class="kv">12,570</span><span class="kp dn">-2.03%</span></div><div class="kr"><span class="kl">산둥 시장</span><span class="kv">12,180</span><span class="kp dn">-2.95%</span></div></div><div class="bt"><a class="b main" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_AN_20261120.html">보고서 열기</a><a class="b" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_AN_20261120_%EC%A0%84%EC%B2%B4_S01-S16.pptx">PPT</a><a class="b" href="archive/2026-W47/chem99_AN_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></div></div></article><article class="card" data-prod="BD"><a class="th" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BD_20261120.html"><img loading="lazy" src="archive/2026-W47/thumbs/BD.jpg" alt="BD 보고서 첫 쪽"></a><div class="cb"><div class="ct"><b>BD</b><span>부타디엔</span></div><div class="kpi"><div class="kr"><span class="kl">산둥 시장</span><span class="kv">14,725</span><span class="kp dn">-1.44%</span></div><div class="kr"><span class="kl">장쑤·저장 시장</span><span class="kv">14,495</span><span class="kp dn">-0.65%</span></div></div><div class="bt"><a class="b main" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BD_20261120.html">보고서 열기</a><a class="b" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BD_20261120_%EC%A0%84%EC%B2%B4_S01-S14.pptx">PPT</a><a class="b" href="archive/2026-W47/chem99_BD_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></div></div></article><article class="card" data-prod="BPA"><a class="th" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BPA_20261120.html"><img loading="lazy" src="archive/2026-W47/thumbs/BPA.jpg" alt="BPA 보고서 첫 쪽"></a><div class="cb"><div class="ct"><b>BPA</b><span>비스페놀A</span></div><div class="kpi"><div class="kr"><span class="kl">화동</span><span class="kv">10,720</span><span class="kp dn">-3.34%</span></div><div class="kr"><span class="kl">화북</span><span class="kv">10,620</span><span class="kp dn">-4.07%</span></div></div><div class="bt"><a class="b main" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BPA_20261120.html">보고서 열기</a><a class="b" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BPA_20261120_%EC%A0%84%EC%B2%B4_S01-S14.pptx">PPT</a><a class="b" href="archive/2026-W47/chem99_BPA_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></div></div></article><article class="card" data-prod="MMA"><a class="th" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_MMA_20261120.html"><img loading="lazy" src="archive/2026-W47/thumbs/MMA.jpg" alt="MMA 보고서 첫 쪽"></a><div class="cb"><div class="ct"><b>MMA</b><span>메틸메타크릴레이트</span></div><div class="kpi"><div class="kr"><span class="kl">화동 1급</span><span class="kv">12,490</span><span class="kp dn">-2.95%</span></div><div class="kr"><span class="kl">화동 무역</span><span class="kv">12,570</span><span class="kp dn">-2.78%</span></div></div><div class="bt"><a class="b main" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_MMA_20261120.html">보고서 열기</a><a class="b" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_MMA_20261120_%EC%A0%84%EC%B2%B4_S01-S12.pptx">PPT</a><a class="b" href="archive/2026-W47/chem99_MMA_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></div></div></article></div></section>
+  <section class="viewer" id="viewer">
+    <div class="vh"><span class="vlab">대표 보고서</span><button class="vchip" data-p="SM">SM</button><button class="vchip" data-p="AN">AN</button><button class="vchip" data-p="BD">BD</button><button class="vchip" data-p="BPA">BPA</button><button class="vchip" data-p="MMA">MMA</button><span class="sp"></span><span class="vlab">주차</span><select id="vweek"></select></div>
+    <div class="va">
+      <button class="b main big" id="bPres" disabled>▶ 바로 발표</button>
+      <button class="b main big" id="bOv" disabled>▣ 전체보기</button>
+      <a class="b big" id="bNew" target="_blank" rel="noopener" href="#">↗ 새 창으로 열기</a>
+      <span class="sp"></span>
+      <a class="b big" id="bPpt" href="#">PPT</a>
+      <a class="b big" id="bMd" href="#">번역본</a>
+    </div>
+    <div class="vk" id="vk"></div>
+    <iframe id="frame" title="대표 보고서" allow="fullscreen" allowfullscreen></iframe>
+    <div class="vf">발표 중 키: →/Space 다음 · ← 이전 · V 전체보기 · S 단계 등장 · T 전환 · B/W 화면 가림 · L 레이저 · 숫자+Enter 쪽 이동 · Esc 종료 &nbsp;|&nbsp; 전체화면은 브라우저 정책상 버튼을 눌러야 켜지며, 아이폰 Safari 는 창 안 발표로 표시됩니다.</div>
+  </section>
+
+  <div class="lh"><h2>주차별 보관함</h2><span class="sp"></span>
+    <select id="fp"><option value="">전체 품목</option><option value="SM">SM</option><option value="AN">AN</option><option value="BD">BD</option><option value="BPA">BPA</option><option value="MMA">MMA</option></select>
+    <input id="q" type="search" placeholder="주차·날짜 검색 (예: W47, 2026-11)"></div>
+  <details class="wk" open data-week="2026-W47 2026-11-20"><summary><b>2026-W47</b><em class="new">최신</em><span class="fr">기준 금요일 2026-11-20 · 5개 품목</span></summary><div class="rows"><div class="row" data-prod="SM" data-w="2026-W47"><span class="rp"><b>SM</b><small>스티렌모노머</small></span><span class="rk"><span class="kx"><i>장쑤</i> <b>10,187</b> <em class="up">+5.46%</em></span><span class="kx"><i>광둥</i> <b>9,819</b> <em class="up">+2.29%</em></span></span><span class="ra"><button class="b main view" data-w="2026-W47" data-p="SM">화면에서 보기</button><a class="b" target="_blank" rel="noopener" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_SM_20261120.html">새 창</a><span class="b off" title="이 주차에는 보관된 PPT 파일이 없습니다 (보고서 안의 [PPT 전체] 버튼으로 저장할 수 있습니다)">PPT 없음</span><a class="b" href="archive/2026-W47/chem99_SM_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></span></div><div class="row" data-prod="AN" data-w="2026-W47"><span class="rp"><b>AN</b><small>아크릴로니트릴</small></span><span class="rk"><span class="kx"><i>화동 항구 2차 시장</i> <b>12,570</b> <em class="dn">-2.03%</em></span><span class="kx"><i>산둥 시장</i> <b>12,180</b> <em class="dn">-2.95%</em></span></span><span class="ra"><button class="b main view" data-w="2026-W47" data-p="AN">화면에서 보기</button><a class="b" target="_blank" rel="noopener" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_AN_20261120.html">새 창</a><a class="b" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_AN_20261120_%EC%A0%84%EC%B2%B4_S01-S16.pptx">PPT</a><a class="b" href="archive/2026-W47/chem99_AN_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></span></div><div class="row" data-prod="BD" data-w="2026-W47"><span class="rp"><b>BD</b><small>부타디엔</small></span><span class="rk"><span class="kx"><i>산둥 시장</i> <b>14,725</b> <em class="dn">-1.44%</em></span><span class="kx"><i>장쑤·저장 시장</i> <b>14,495</b> <em class="dn">-0.65%</em></span></span><span class="ra"><button class="b main view" data-w="2026-W47" data-p="BD">화면에서 보기</button><a class="b" target="_blank" rel="noopener" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BD_20261120.html">새 창</a><a class="b" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BD_20261120_%EC%A0%84%EC%B2%B4_S01-S14.pptx">PPT</a><a class="b" href="archive/2026-W47/chem99_BD_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></span></div><div class="row" data-prod="BPA" data-w="2026-W47"><span class="rp"><b>BPA</b><small>비스페놀A</small></span><span class="rk"><span class="kx"><i>화동</i> <b>10,720</b> <em class="dn">-3.34%</em></span><span class="kx"><i>화북</i> <b>10,620</b> <em class="dn">-4.07%</em></span></span><span class="ra"><button class="b main view" data-w="2026-W47" data-p="BPA">화면에서 보기</button><a class="b" target="_blank" rel="noopener" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BPA_20261120.html">새 창</a><a class="b" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_BPA_20261120_%EC%A0%84%EC%B2%B4_S01-S14.pptx">PPT</a><a class="b" href="archive/2026-W47/chem99_BPA_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></span></div><div class="row" data-prod="MMA" data-w="2026-W47"><span class="rp"><b>MMA</b><small>메틸메타크릴레이트</small></span><span class="rk"><span class="kx"><i>화동 1급</i> <b>12,490</b> <em class="dn">-2.95%</em></span><span class="kx"><i>화동 무역</i> <b>12,570</b> <em class="dn">-2.78%</em></span></span><span class="ra"><button class="b main view" data-w="2026-W47" data-p="MMA">화면에서 보기</button><a class="b" target="_blank" rel="noopener" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_MMA_20261120.html">새 창</a><a class="b" href="archive/2026-W47/chem99%EB%A0%88%ED%8F%AC%ED%8A%B8_MMA_20261120_%EC%A0%84%EC%B2%B4_S01-S12.pptx">PPT</a><a class="b" href="archive/2026-W47/chem99_MMA_%EB%B2%88%EC%97%AD_20261120.md">번역본</a></span></div></div></details>
   <p class="none" id="none" hidden>조건에 맞는 항목이 없습니다.</p>
   <div class="foot">이 페이지는 <code>python3 scripts/archive.py build</code> 로 자동 생성됩니다 (직접 수정하지 마세요).<br>기존 War Room 대시보드는 <a href="warroom/index.html">warroom/</a> 에 있습니다.</div>
 </main>
+<div id="toast"></div>
+<script type="application/json" id="data">{"weeks": [{"week": "2026-W47", "friday": "20261120", "products": {"AN": {"md": "chem99_AN_번역_20261120.md", "html": "chem99레포트_AN_20261120.html", "pptx": "chem99레포트_AN_20261120_전체_S01-S16.pptx", "kpi": [{"label": "화동 항구 2차 시장", "price": "12,570", "pct": "-2.03%"}, {"label": "산둥 시장", "price": "12,180", "pct": "-2.95%"}]}, "BD": {"md": "chem99_BD_번역_20261120.md", "html": "chem99레포트_BD_20261120.html", "pptx": "chem99레포트_BD_20261120_전체_S01-S14.pptx", "kpi": [{"label": "산둥 시장", "price": "14,725", "pct": "-1.44%"}, {"label": "장쑤·저장 시장", "price": "14,495", "pct": "-0.65%"}]}, "BPA": {"md": "chem99_BPA_번역_20261120.md", "html": "chem99레포트_BPA_20261120.html", "pptx": "chem99레포트_BPA_20261120_전체_S01-S14.pptx", "kpi": [{"label": "화동", "price": "10,720", "pct": "-3.34%"}, {"label": "화북", "price": "10,620", "pct": "-4.07%"}]}, "MMA": {"md": "chem99_MMA_번역_20261120.md", "html": "chem99레포트_MMA_20261120.html", "pptx": "chem99레포트_MMA_20261120_전체_S01-S12.pptx", "kpi": [{"label": "화동 1급", "price": "12,490", "pct": "-2.95%"}, {"label": "화동 무역", "price": "12,570", "pct": "-2.78%"}]}, "SM": {"md": "chem99_SM_번역_20261120.md", "html": "chem99레포트_SM_20261120.html", "kpi": [{"label": "장쑤", "price": "10,187", "pct": "+5.46%"}, {"label": "광둥", "price": "9,819", "pct": "+2.29%"}]}}}], "order": ["SM", "AN", "BD", "BPA", "MMA"], "names": {"SM": "스티렌모노머", "AN": "아크릴로니트릴", "BD": "부타디엔", "BPA": "비스페놀A", "MMA": "메틸메타크릴레이트"}}</script>
 <script>
-  // 품목 필터·주차 검색 (화면 표시만 바꾸며 데이터는 그대로)
-  var chips = document.querySelectorAll('.chip'), q = document.getElementById('q'), none = document.getElementById('none');
-  var curF = '';
+  // 허브 동작: 대표 보고서 뷰어(iframe) 전환·발표·전체보기, 보관함 필터·검색
+  var DATA = JSON.parse(document.getElementById('data').textContent);       // 스크립트가 심어 둔 주차·품목 목록
+  var frame = document.getElementById('frame'), toastEl = document.getElementById('toast');
+  var bPres = document.getElementById('bPres'), bOv = document.getElementById('bOv');
+  var cur = { p: '', w: '' };                                                // 현재 뷰어에 표시 중인 품목·주차
+
+  function toast(msg, ms) {                                                  // 하단 안내 문구
+    toastEl.textContent = msg; toastEl.style.display = 'block';
+    clearTimeout(toast.t); toast.t = setTimeout(function () { toastEl.style.display = 'none'; }, ms || 3500);
+  }
+  function enc(rel) { return rel.split('/').map(encodeURIComponent).join('/'); }   // 한글 파일 이름 인코딩
+  function url(w, file) { return 'archive/' + w + '/' + enc(file); }
+  function findWeek(w) { for (var i = 0; i < DATA.weeks.length; i++) if (DATA.weeks[i].week === w) return DATA.weeks[i]; return null; }
+  function weeksOf(p) {                                                      // 해당 품목 HTML 이 있는 주차들(최신 먼저)
+    return DATA.weeks.filter(function (x) { return x.products[p] && x.products[p].html; });
+  }
+  function pctCls(s) { return /^\+\d/.test(s) ? 'up' : (/^-\d/.test(s) ? 'dn' : ''); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  function setLink(a, href, ok) {                                            // 링크 버튼 활성/비활성
+    if (ok) { a.href = href; a.classList.remove('off'); a.removeAttribute('title'); }
+    else { a.removeAttribute('href'); a.classList.add('off'); }
+  }
+  function show(p, w, scroll) {                                              // 뷰어에 품목·주차 표시
+    var list = weeksOf(p);
+    if (!list.length) { toast(p + ' 보고서가 아직 없습니다.'); return; }
+    var wk = findWeek(w) && findWeek(w).products[p] && findWeek(w).products[p].html ? w : list[0].week;
+    var item = findWeek(wk).products[p];
+    document.querySelectorAll('.vchip').forEach(function (b) { b.classList.toggle('on', b.dataset.p === p); });
+    var sel = document.getElementById('vweek');
+    sel.innerHTML = list.map(function (x) { return '<option value="' + x.week + '">' + x.week + ' (' + x.friday.slice(0, 4) + '-' + x.friday.slice(4, 6) + '-' + x.friday.slice(6) + ')</option>'; }).join('');
+    sel.value = wk;
+    var changed = cur.p !== p || cur.w !== wk;
+    cur = { p: p, w: wk };
+    var u = url(wk, item.html);
+    document.getElementById('bNew').href = u;
+    setLink(document.getElementById('bPpt'), item.pptx ? url(wk, item.pptx) : '', !!item.pptx);
+    if (!item.pptx) document.getElementById('bPpt').title = '이 주차에는 보관된 PPT 파일이 없습니다 (보고서 안의 [PPT 전체] 버튼으로 저장)';
+    setLink(document.getElementById('bMd'), item.md ? url(wk, item.md) : '', !!item.md);
+    var k = (item.kpi || []).map(function (x) { return '<span class="kx"><i>' + esc(x.label) + '</i> <b>' + esc(x.price) + '</b> <em class="' + pctCls(x.pct) + '">' + esc(x.pct) + '</em></span>'; }).join('');
+    document.getElementById('vk').innerHTML = '<span class="tt">' + p + ' · ' + DATA.names[p] + ' · ' + wk + '</span>' + k;
+    document.querySelectorAll('.row').forEach(function (r) { r.classList.toggle('cur', r.dataset.prod === p && r.dataset.w === wk); });
+    if (changed) {                                                           // 같은 보고서면 다시 불러오지 않음
+      bPres.disabled = true; bOv.disabled = true; bOv.textContent = '▣ 전체보기';
+      frame.src = u;
+    }
+    try { history.replaceState(null, '', '?p=' + p + '&w=' + wk); } catch (e) {}
+    if (scroll) document.getElementById('viewer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  frame.addEventListener('load', function () {                               // 보고서가 열리면 버튼 활성화, 쪽 수 표시
+    if (!frame.getAttribute('src')) return;
+    bPres.disabled = false; bOv.disabled = false;
+    try {
+      var n = frame.contentWindow.eval('SLIDES.length');                      // 보고서 안의 쪽 수
+      if (n) bOv.textContent = '▣ 전체보기(' + n + '쪽)';
+    } catch (e) {}
+  });
+  function fallbackOpen(msg) {                                               // 연동이 막힌 경우(file:// 등) 새 창으로 대신
+    window.open(document.getElementById('bNew').href, '_blank');
+    toast(msg, 5000);
+  }
+  function runInReport(fn, label) {                                          // 보고서 안의 함수 호출 (같은 사이트일 때만 가능)
+    var w;
+    try { w = frame.contentWindow; if (typeof w[fn] !== 'function') throw new Error('x'); }
+    catch (e) { fallbackOpen('연동이 막혀 새 창으로 열었습니다. 새 창에서 ' + label + ' 버튼을 눌러 주세요.'); return; }
+    frame.focus(); w.focus();                                                // 방향키·Esc 가 보고서로 전달되도록 포커스 이동
+    w[fn]();
+  }
+  bPres.addEventListener('click', function () { runInReport('startPresent', '[▶ 발표(F5)]'); });   // 클릭 1회로 전체화면 발표
+  bOv.addEventListener('click', function () { runInReport('showOverview', '[▣ 전체보기]'); });
+  document.querySelectorAll('.vchip').forEach(function (b) {                  // 품목 전환 (같은 주차 우선)
+    if (!weeksOf(b.dataset.p).length) b.disabled = true;
+    b.addEventListener('click', function () { show(b.dataset.p, cur.w, false); });
+  });
+  document.getElementById('vweek').addEventListener('change', function (e) { show(cur.p, e.target.value, false); });
+  document.querySelectorAll('.view').forEach(function (b) {                   // 보관함의 [화면에서 보기]
+    b.addEventListener('click', function () { show(b.dataset.p, b.dataset.w, true); });
+  });
+
+  // 보관함 필터·검색 (화면 표시만 바꾸며 데이터는 그대로)
+  var q = document.getElementById('q'), fp = document.getElementById('fp'), none = document.getElementById('none');
   function apply() {
-    var kw = q.value.trim().toLowerCase(), any = false;
-    document.querySelectorAll('.wk').forEach(function (w) {
+    var kw = q.value.trim().toLowerCase(), f = fp.value, any = false;
+    document.querySelectorAll('details.wk').forEach(function (w) {
       var okW = !kw || (w.dataset.week || '').toLowerCase().indexOf(kw) >= 0, shown = 0;
-      w.querySelectorAll('.card').forEach(function (c) {
-        var ok = okW && (!curF || c.dataset.prod === curF);
-        c.style.display = ok ? '' : 'none';
+      w.querySelectorAll('.row').forEach(function (r) {
+        var ok = okW && (!f || r.dataset.prod === f);
+        r.style.display = ok ? '' : 'none';
         if (ok) shown++;
       });
       w.style.display = shown ? '' : 'none';
       if (shown) any = true;
-      if (shown && w.tagName === 'DETAILS' && (kw || curF)) w.open = true;   // 필터 중에는 접힌 주차도 펼침
+      if (shown && (kw || f)) w.open = true;                                  // 필터 중에는 접힌 주차도 펼침
     });
     none.hidden = any;
   }
-  chips.forEach(function (b) {
-    b.addEventListener('click', function () {
-      chips.forEach(function (x) { x.classList.remove('on'); });
-      b.classList.add('on'); curF = b.dataset.f; apply();
-    });
-  });
-  q.addEventListener('input', apply);
+  q.addEventListener('input', apply); fp.addEventListener('change', apply);
+
+  // 처음 표시: 주소의 ?p=SM&w=2026-W47 이 있으면 그것을, 없으면 첫 품목(SM)의 최신 주차
+  var qs = new URLSearchParams(location.search), p0 = qs.get('p');
+  if (!p0 || !weeksOf(p0).length) p0 = DATA.order.filter(function (x) { return weeksOf(x).length; })[0];
+  if (p0) show(p0, qs.get('w') || '', false);
 </script>
 </body>
 </html>
