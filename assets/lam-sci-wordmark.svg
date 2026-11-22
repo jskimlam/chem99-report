@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" width="960" height="360">
+  <!-- 후보 B: 흰 바탕 가로형 워드마크 (보고서 제목줄 + 장식 3개 양식과 같은 구성) -->
+  <rect width="960" height="360" fill="#FFFFFF"/>
+  <text x="60" y="190" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-weight="700" font-size="150" letter-spacing="4" fill="#0C4270">LAM</text>
+  <text x="458" y="190" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-weight="700" font-size="150" letter-spacing="4" fill="#000000">SCI</text>
+  <rect x="60" y="226" width="840" height="5" fill="#0C4270"/>
+  <polygon points="702,228 724,206 746,228 724,250" fill="#FF0000"/>
+  <circle cx="796" cy="228" r="22" fill="#0C4270"/>
+  <rect x="826" y="206" width="44" height="44" rx="11" fill="#7ED321"/>
+  <text x="60" y="296" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-weight="700" font-size="34" letter-spacing="3" fill="#7F7F7F">ADVANCED PROCUREMENT · SCI99 WEEKLY</text>
+</svg>

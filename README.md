@@ -16,6 +16,8 @@ chem99-report/
 │     ├─ chem99레포트_AN_20261120_전체_S01-S16.pptx
 │     ├─ chem99_AN_번역_20261120.md
 │     └─ …
+├─ assets/                     # LAM SCI 아이콘(A 남색 배지·B 흰 타일: svg/png/ico)·가로 워드마크
+├─ manifest.webmanifest        # 브라우저 '앱 설치·바로가기' 아이콘 설정 (A 아이콘 사용)
 ├─ scripts/archive.py          # 새 주 추가 · 허브 재생성
 ├─ warroom/index.html          # 기존 Petchem War Room 대시보드 (그대로 이동)
 └─ .nojekyll                   # GitHub Pages가 파일을 가공하지 않도록

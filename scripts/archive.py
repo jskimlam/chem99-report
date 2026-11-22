@@ -136,9 +136,15 @@ def render_hub(weeks):
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CHEM99 주간 시황 보고서 아카이브</title>
+<link rel="icon" type="image/png" sizes="192x192" href="assets/lam-sci-a-192.png">
+<link rel="shortcut icon" href="assets/lam-sci-a.ico">
+<link rel="apple-touch-icon" href="assets/lam-sci-a-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0C4270">
 <style>
   body{margin:0;background:#f5f7fa;color:#1a1a1a;font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif}
   .wrap{max-width:860px;margin:0 auto;padding:28px 18px 60px}
+  .logo{display:block;height:46px;width:auto;margin:0 0 12px}
   h1{margin:0 0 6px;font-size:26px}
   .sub{color:#595959;font-size:13px;margin-bottom:22px;line-height:1.6}
   details.wk{background:#fff;border:1px solid #d9d9d9;border-radius:10px;margin-bottom:10px;padding:0 16px}
@@ -156,6 +162,7 @@ def render_hub(weeks):
 </head>
 <body>
 <div class="wrap">
+  <img class="logo" src="assets/lam-sci-wordmark-ui.png" alt="LAM SCI">
   <h1>CHEM99 주간 시황 보고서 아카이브</h1>
   <div class="sub">卓创资讯(SCI99) 주보 번역 + 회사양식 HTML 보고서를 주차별(ISO 주차)로 보관합니다. 주차는 기준 금요일 기준이며 원문 회차(제NN기)와 다릅니다.</div>
   %s
