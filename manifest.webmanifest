@@ -1,0 +1,13 @@
+{
+  "name": "CHEM99 주간 시황 보고서 아카이브",
+  "short_name": "LAM SCI",
+  "description": "SCI99 주간 시황 번역 + 회사양식 HTML·PPT 보고서 아카이브",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0C4270",
+  "theme_color": "#0C4270",
+  "icons": [
+    { "src": "assets/lam-sci-a-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/lam-sci-a-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

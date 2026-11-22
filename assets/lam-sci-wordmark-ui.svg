@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 270" width="960" height="270">
+  <!-- 허브 상단용 워드마크: 투명 배경, 보조 문구 없음 -->
+  <text x="60" y="190" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-weight="700" font-size="150" letter-spacing="4" fill="#0C4270">LAM</text>
+  <text x="458" y="190" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-weight="700" font-size="150" letter-spacing="4" fill="#000000">SCI</text>
+  <rect x="60" y="226" width="840" height="5" fill="#0C4270"/>
+  <polygon points="702,228 724,206 746,228 724,250" fill="#FF0000"/>
+  <circle cx="796" cy="228" r="22" fill="#0C4270"/>
+  <rect x="826" y="206" width="44" height="44" rx="11" fill="#7ED321"/>
+</svg>
