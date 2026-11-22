@@ -103,9 +103,9 @@ def scan():
     return out
 
 
-def link(week, name, label):
-    """상대 경로 링크(한글 파일 이름은 퍼센트 인코딩)."""
-    return '<a href="archive/%s/%s">%s</a>' % (week, quote(name), label)
+def link(week, name, label, dl=False):
+    """상대 경로 링크(한글 파일 이름은 퍼센트 인코딩). dl=True 면 download 속성으로 열지 않고 바로 저장."""
+    return '<a href="archive/%s/%s"%s>%s</a>' % (week, quote(name), ' download' if dl else '', label)
 
 
 def render_hub(weeks):
@@ -120,7 +120,7 @@ def render_hub(weeks):
             p = w['products'][prod]
             cells = [
                 link(w['week'], p['html'], '보고서 열기') if 'html' in p else '<span class="na">-</span>',
-                link(w['week'], p['pptx'], 'PPT') if 'pptx' in p else '<span class="na">-</span>',
+                link(w['week'], p['pptx'], 'PPT 받기', True) if 'pptx' in p else '<span class="na">-</span>',
                 link(w['week'], p['md'], '번역본') if 'md' in p else '<span class="na">-</span>',
             ]
             trs.append('<tr><td class="pn">%s</td><td>%s</td><td>%s</td><td>%s</td></tr>' % (
