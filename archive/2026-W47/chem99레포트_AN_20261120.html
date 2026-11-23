@@ -1440,7 +1440,7 @@ function slideFiber() {
   const tot = gg.reduce((a, r) => a + r.v[0], 0), cut = gg.reduce((a, r) => a + r.v[1], 0), share = cut / tot * 100;
   const fdv = fb[2] - FUND.fiber.cur;
   out.push(msgBox(pf, [R('□ 아크릴 단섬유 ' + fmt(FUND.fiber.cur, 0) + '위안 '), R('+' + fmt(FUND.fiber.pct, 2) + '%', { color: UP }), R(' 고가권 안정 — '), R('차주 관망·약보합 ' + fmt(fb[0], 0) + '~' + fmt(fb[1], 0), { color: dirCol(fdv) })],
-    '※ 가동률 ' + rtx(og[1]) + '%(' + arrowTxt(r2(og[1] - og[0]), 1) + '%p) · 감산·정지 ' + f1(cut) + '/' + f1(tot) + '만 톤(' + fmt(share, 1) + '%, 집계) · AN 12,000위안 이상 고가로 바닥 지지, 최종 소비 부진'));
+    '※ 가동률 ' + rtx(og[1]) + '%(' + arrowTxt(r2(og[1] - og[0]), 1) + '%p) · 감산·정지 ' + f1(cut) + '/' + f1(tot) + '만 톤(' + fmt(share, 1) + '%, 집계) · AN 12,000위안↑ 고가 바닥 지지, 최종 소비 부진'));
   kpiRow(pf, 1.43, [
     { t: '아크릴 단섬유 주평균 (위안/톤)', v: fmt(FUND.fiber.cur, 0), sub: srcSub('전주 대비', '+' + fmt(FUND.fiber.pct, 2) + '%') },
     { t: '아크릴섬유 가동률', v: rtx(og[1]) + '%', sub: rateSubAN(2) },
@@ -1552,7 +1552,7 @@ function slideOutlook1() {
   const pf = 's5a', out = hdr(pf, '5. 차주 전망 (1) 가격·요인');
   const B = mdBullets(/^### 5\./), fr = G('f_AN').rows, f = fr[0].v, v0 = pv(MAIN), fd = f[2] - v0[1];
   out.push(msgBox(pf, [R('□ 차주 AN ' + FUND.fc.word + ' — 산둥 ' + fmt(f[0], 0) + '~' + fmt(f[1], 0) + ' / 평균 '), R(fmt(f[2], 0), { color: dirCol(fd) }), R(' (본주比 ' + arrowTxt(fd, 0) + ')', { color: dirCol(fd) })],
-    '※ 수요(★)·원가(★) 약세 요인과 공급(★) 중립 — 화동 1개 설비 정기보수·아크릴섬유 정기보수 예상, 프로필렌 하락 예상 (번역본 5절)'));
+    '※ 수요(★)·원가(★) 약세와 공급(★) 중립 — 화동 1개 설비·아크릴섬유 정기보수 예상, 프로필렌 하락 예상 (번역본 5절)'));
   const t5 = zhOff(mdTbl(/^### 5\./, 0));
   out.push(cardHead(pf + '.c1', LX, 1.43, CWID, 2.05, '①', '표5 주요 영향 요인 분석표', '(출처: 탁창자쉰)', 1));
   out.push(srcTable(pf + '.t1', LX + 0.08, 1.73, t5, [0.62, 2.3, 0.7, 0.93], { sz: 7.4, al: ['l', 'l', 'c', 'c'], first: true, colorFn: (t, ci, ri) => (ci === 3 && ri > 0 ? dirWordCol(t) : null), s: 1, minH: 0.3 }));
@@ -1588,8 +1588,8 @@ function slideOutlook2() {
   const B = mdBullets(/^### 5\./), fr = G('f_AN').rows, cg = G('c_AN').rows, pp = fr[2].v, P = FUND.prop;
   const pd = pp[2] - cg[0].v[0];
   const parts = B[3].split('**합성 암모니아:**'), propTxt = parts[0].replace(/^\*\*원가 측면:\*\*\s*/, '').replace(/^\*\*프로필렌:\*\*\s*/, ''), ammTxt = (parts[1] || '').trim();
-  out.push(msgBox(pf, [R('□ 프로필렌 차주 평균 ' + fmt(pp[2], 0) + ' '), R(arrowTxt(pd, 0), { color: dirCol(pd) }), R(' (' + fmt(pp[0], 0) + '~' + fmt(pp[1], 0) + ') — 공급 압력 증가, 액체 암모니아는 '), R('보합 속 미세 조정', { color: FLAT })],
-    '※ 북부 PDH 재가동으로 프로필렌 공급 증가·수요 지지 제한 / 암모니아는 고가에서 급등 후 하락 가능성 (번역본 5절 원가 측면)'));
+  out.push(msgBox(pf, [R('□ 프로필렌 차주 평균 ' + fmt(pp[2], 0) + ' '), R(arrowTxt(pd, 0), { color: dirCol(pd) }), R(' (' + fmt(pp[0], 0) + '~' + fmt(pp[1], 0) + ') — 공급 압력 증가, 암모니아 '), R('보합·미세 조정', { color: FLAT })],
+    '※ 북부 PDH 재가동으로 프로필렌 공급 증가·수요 지지 제한 / 암모니아는 고가에서 급등 후 하락 가능성 (번역본 5절)'));
   kpiRow(pf, 1.43, [
     { t: '프로필렌 차주 평균 (위안/톤)', v: fmt(pp[2], 0), vc: dirCol(pd), sub: [R(fmt(pp[0], 0) + '~' + fmt(pp[1], 0) + '  ', { size: 8, color: COL.mute }), R('금주比 ' + arrowTxt(pd, 0), { size: 8.5, bold: true, color: dirCol(pd) })] },
     { t: '프로필렌 본주 평균 (위안/톤)', v: fmt(cg[0].v[0], 0), sub: srcSub('전주 대비', fmt(P.pct, 2) + '%') },
@@ -1617,7 +1617,7 @@ function slideOutlook2() {
 function slideMethod() {
   const pf = 's67', out = hdr(pf, '6. 방법론 · 7. 성명');
   const B6 = mdBullets(/^### 6\./), B7 = mdBullets(/^### 7\./);
-  out.push(msgBox(pf, [R('□ 주평균가 = 지난 금~이번 주 목 일별 종가 산술평균 — '), R('가동률 샘플 커버리지 AN·아크릴섬유 100%, AM 65%', { color: UP })],
+  out.push(msgBox(pf, [R('□ 주평균가 = 금~목 종가 산술평균 — '), R('가동률 샘플 커버리지 AN·아크릴섬유 100%, AM 65%', { color: UP })],
     '※ 원문 p.8~10 방법론·성명 (번역본 6·7절 문장 그대로) · 면책·리스크·지식재산권 성명 포함'));
   out.push(cardText(pf + '.c1', LX, 1.43, CWID, 5.69, '①', '6. 방법론', '(六、方法论)', B6.map(s => bl(s, { sz: 6.9 })), 1, { size: 6.9 }));
   const dis = [lead('', B7[0].replace(/\*\*/g, ''), '000000').slice(1)].concat([1, 2].map(i => pl(B7[i])), [lead('', B7[3].replace(/\*\*/g, ''), '000000').slice(1)], [4, 5, 6].map(i => pl(B7[i])),

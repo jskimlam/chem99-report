@@ -1395,7 +1395,7 @@ function slideSupply() {
   const B = mdBullets(/^#### 2\.1/), bt = mdBoldLines(/^#### 2\.1/), og = G('o_BP').rows[0].v, F = FUND;
   const tot = round1(PLANTS.reduce((a, p) => a + p.cap, 0)), mt = round1(MAINT.reduce((a, p) => a + p.cap, 0));
   const z = PLANTS.filter(p => p.rate === 0), zc = round1(z.reduce((a, p) => a + p.cap, 0));
-  out.push(msgBox(pf, [R('□ BPA 가동률 ' + rtx(og[1]) + '% '), R(arrowTxt(r2(og[1] - og[0]), 1) + '%p', { color: dirCol(og[1] - og[0]) }), R(' — 정기보수·가동 중단 ' + MAINT.length + '개 설비 ' + fmt(mt, 0) + '만 톤/년, 재가동 시점 모두 미정')],
+  out.push(msgBox(pf, [R('□ BPA 가동률 ' + rtx(og[1]) + '% '), R(arrowTxt(r2(og[1] - og[0]), 1) + '%p', { color: dirCol(og[1] - og[0]) }), R(' — 정기보수·중단 ' + MAINT.length + '개 설비 ' + fmt(mt, 0) + '만 톤/년, 재가동 시점 모두 미정')],
     '※ 가동 중단 설비는 재가동 계획 없음 · 일부 설비 부하 상승, 일부는 부하를 낮추고 용융 유지 → 업종 가동률 소폭 상승'));
   kpiRow(pf, 1.43, [
     { t: 'BPA 가동률', v: rtx(og[1]) + '%', sub: rateSubBP(0) },
@@ -1455,7 +1455,7 @@ function slideDemand() {
   const B = mdBullets(/^### 3\./), bt = mdBoldLines(/^### 3\./), og = G('o_BP').rows;
   const dP = r2(og[1].v[1] - og[1].v[0]), dL = r2(og[2].v[1] - og[2].v[0]), dS = r2(og[3].v[1] - og[3].v[0]), pcCap = round1(PCS.reduce((a, p) => a + p.cap, 0));
   out.push(msgBox(pf, [R('□ PC 가동률 ' + rtx(og[1].v[1]) + '% '), R(arrowTxt(dP, 1) + '%p', { color: dirCol(dP) }), R(' · 액상 에폭시 ' + rtx(og[2].v[1]) + '% '), R(arrowTxt(dL, 1) + (dL ? '%p' : ''), { color: dirCol(dL) }), R(' · 고상 에폭시 ' + rtx(og[3].v[1]) + '% '), R(arrowTxt(dS, 1) + (dS ? '%p' : ''), { color: dirCol(dS) })],
-    '※ 일부 액상 수지 설비 단계적 가동 중단·부하 축소 / PC는 라인 세척 설비 회복·정기보수 종료 설비 재가동으로 소폭 상승 (번역본 3절)'));
+    '※ 일부 액상 수지 설비 단계적 중단·부하 축소 / PC는 라인 세척 설비 회복·보수 종료 설비 재가동에 소폭 상승 (번역본 3절)'));
   kpiRow(pf, 1.43, [
     { t: 'PC 가동률', v: rtx(og[1].v[1]) + '%', sub: rateSubBP(1) },
     { t: '액상 에폭시 수지 가동률', v: rtx(og[2].v[1]) + '%', sub: rateSubBP(2) },
@@ -1545,7 +1545,7 @@ function slideRaw() {
   const B = mdBullets(/^### 4\./), mg = G('m_BP').rows, F = FUND;
   const dph = mg[0].v[1] - mg[0].v[0], dac = mg[1].v[1] - mg[1].v[0];
   out.push(msgBox(pf, [R('□ 페놀 주평균 ' + fmt(mg[0].v[1], 0) + ' '), R(pctTxt(pctOf(mg[0].v[0], mg[0].v[1])), { color: dirCol(dph) }), R(' · 아세톤 주평균 ' + fmt(mg[1].v[1], 0) + ' '), R(pctTxt(pctOf(mg[1].v[0], mg[1].v[1])), { color: dirCol(dac) }), R(' — 두 원료 방향이 엇갈림')],
-    '※ 페놀: 전반주 반등 후 후반주 원유·순수벤젠 약세로 관망 / 아세톤: 항구 재고 낮아 초반 상승 후 원가 지지 약화 (번역본 4절)'));
+    '※ 페놀: 전반주 반등 후 후반주 원유·순수벤젠 약세 관망 / 아세톤: 항구 재고 낮아 초반 상승 후 원가 지지 약화 (번역본 4절)'));
   out.push(cardText(pf + '.c1', LX, 1.43, CWID, 3.55, '①', '국내 페놀 시장 (화동)', '(원문 p.5)', [pl(B[1])], 1, { size: 9.8 }));
   out.push(cardText(pf + '.c2', LX, 5.05, CWID, 2.07, '②', '국내 아세톤 시장 (장쑤)', '(원문 p.5~6)', [pl(B[2])], 2, { size: 9.2 }));
   out.push(cardHead(pf + '.c3', RX, 1.43, CWID, 2.75, '③', '주평균 (전주 역산 vs 본주)', '(위안/톤 · 축 8,000부터)', 3));
@@ -1568,7 +1568,7 @@ function slideOutlook1() {
   const pf = 's5a', out = hdr(pf, '5. 차주 시장 전망 (1) 가격·요인');
   const B = mdBullets(/^### 5\./), bt = mdBoldLines(/^### 5\./), f = G('f_BP').rows[0].v, v0 = pv(MAIN), fd = f[2] - v0[1], F = FUND;
   out.push(msgBox(pf, [R('□ 차주 BPA 가격 ' + F.fc.word + ' — 화동 ' + fmt(f[0], 0) + '~' + fmt(f[1], 0) + ' / 평균 '), R(fmt(f[2], 0), { color: dirCol(fd) }), R(' (본주比 ' + arrowTxt(fd, 0) + ')', { color: dirCol(fd) })],
-    '※ 공급 중립 소폭 약세(★★★)·수요 중립 소폭 약세(★★★)·원가 약세(★★★★) — 원유 선물 흐름 주시 (번역본 5절 표7)'));
+    '※ 공급 중립 소폭 약세(★★★)·수요 중립 소폭 약세(★★★)·원가 약세(★★★★) — 원유 선물 흐름 주시 (번역본 5절)'));
   const t7 = zhOff(mdTbl(/^### 5\./, 0));
   const k1 = tblBlock(pf + '.a', LX, 1.43, CWID, '①', bt[0].replace(/\*\*/g, ''), B[0], t7, [0.55, 2.4, 0.65, 0.95],
     { sz: 7.4, al: ['l', 'l', 'c', 'c'], first: true, minH: 0.28, colorFn: (t, ci, ri) => (ci === 3 && ri > 0 ? dirWordCol(t) : null) }, 1);
@@ -1634,7 +1634,7 @@ function slideOutlook2() {
 function slideMethod() {
   const pf = 's67', out = hdr(pf, '6. 방법론 · 7. 성명');
   const B6 = mdBullets(/^### 6\./), B7 = mdBullets(/^### 7\./);
-  out.push(msgBox(pf, [R('□ 주평균가 = 지난 금~이번 주 목 일별 종가 산술평균 — '), R('BPA 가동률 샘플 커버리지 100%', { color: UP })],
+  out.push(msgBox(pf, [R('□ 주평균가 = 금~목 종가 산술평균 — '), R('BPA 가동률 샘플 커버리지 100%', { color: UP })],
     '※ 원문 p.6~8 방법론·성명 (번역본 6·7절 문장 그대로) · 면책·리스크·지식재산권 성명 포함'));
   out.push(cardText(pf + '.c1', LX, 1.43, CWID, 5.69, '①', '6. 방법론', '(六、方法论)', B6.map(s => bl(s, { sz: 8.8 })), 1, { size: 8.8 }));
   out.push(cardText(pf + '.c2', RX, 1.43, CWID, 5.69, '②', '7. 성명', '(七、声明)', B7.map(s => pl(s, { sz: 8.4 })), 2, { size: 8.4 }));
