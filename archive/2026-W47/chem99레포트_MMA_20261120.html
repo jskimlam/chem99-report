@@ -1229,7 +1229,7 @@ function slideHub() {
   const F = FUND, B0 = mdBullets(/^### 0\./);
   const word = d0 > 0 ? '상승' : (d0 < 0 ? '하락' : '보합');
   out.push(msgBox(pf, [R('□ 화동 1급 MMA ' + fmt(v0[1], 0) + '위안 '), R(pctTxt(p0), { color: dirCol(d0) }), R(' ' + word + ' — ACH법 이익 ' + fmt(cg[0].v[1], 0) + '위안, '), R('차주 ' + F.fc.word, { color: dirCol(fd) })],
-    '※ MMA 가동률 ' + rtx(og[1]) + '%(전주 대비 0%) · C4법 이익 ' + fmt(cg[1].v[1], 0) + '위안(흑자 전환) · 화동 1급 11/19 종가 ' + fmt(F.close.lo, 0) + '~' + fmt(F.close.hi, 0) + '(11/12 대비 ' + fmt(F.close.d, 0) + ')'));
+    '※ MMA 가동률 ' + rtx(og[1]) + '%(전주 보합) · C4법 이익 ' + fmt(cg[1].v[1], 0) + '위안(흑자 전환) · 화동 1급 11/19 종가 ' + fmt(F.close.lo, 0) + '~' + fmt(F.close.hi, 0) + '(11/12比 ' + fmt(F.close.d, 0) + ')'));
   const kp = i => ({ t: MKT[i].k + ' 주평균 (위안/톤)', v: fmt(pv(i)[1], 0), sub: subRuns('전주 ' + fmt(pv(i)[0], 0), pv(i)[1] - pv(i)[0], pctOf(pv(i)[0], pv(i)[1]), 0) });
   kpiRow(pf, 1.43, [kp(0), kp(1), kp(2), kp(3)], 1).forEach(k => out.push(k));
   const a = cg[0].v, c = cg[1].v;
@@ -1337,7 +1337,7 @@ function slideReview() {
   const pf = 's12', out = hdr(pf, '1.2 본주 MMA 시장 회고');
   const B = mdBullets(/^#### 1\.2/), bt = mdBoldLines(/^#### 1\.2/), F = FUND, v0 = pv(MAIN), d0 = v0[1] - v0[0];
   out.push(msgBox(pf, [R('□ 수급 모순 심화 — 화동 1급 11/19 ' + fmt(F.close.lo, 0) + '~' + fmt(F.close.hi, 0) + ' ('), R(fmt(F.close.d, 0), { color: DN }), R(')')],
-    '※ 주평균 ' + fmt(v0[1], 0) + '(' + pctTxt(pctOf(v0[0], v0[1])) + ') · 다운스트림 주문 부족·산둥 현물 공장 재고 낮추기 출하, 저가에서 필요 물량 보충하며 하락 멈춤 (번역본 1.2절)'));
+    '※ 주평균 ' + fmt(v0[1], 0) + '(' + pctTxt(pctOf(v0[0], v0[1])) + ') · 다운스트림 주문 부족·산둥 공장 재고 감축 출하, 저가 필요분 보충에 하락 멈춤 (번역본 1.2절)'));
   out.push(cardText(pf + '.c1', LX, 1.43, CWID, 2.75, '①', '본주 MMA 시장 회고', '(1.2 本周MMA市场回顾)', [pl(B[0])], 1, { size: 9.9 }));
   const dg = G('d_MM').rows[0].v, lo = [12800, 12500, 12400, 12200, 12200], hi = [12900, 12600, 12500, 12400, 12400];
   out.push(cardHead(pf + '.c2', RX, 1.43, CWID, 2.75, '②', '화동 1급 일별 가격 범위', '(위안/톤 · 점선=하단~상단 · 원=중간값)', 2));
@@ -1365,7 +1365,7 @@ function slideSupply() {
   const st = capBy(p => CLS_NAME[p.cls], CLS_ORDER), pr = capBy(p => p.proc, ['ACH법', 'C4법', 'C2법']), lc = capBy(p => p.loc);
   const nS = PLANTS.filter(p => p.cls === 'S').length, nP = PLANTS.filter(p => p.cls === 'P').length;
   out.push(msgBox(pf, [R('□ MMA 가동률 ' + rtx(og[1]) + '% '), R('보합', { color: FLAT }), R(' — 스얼방 부하 상향·저장석화 1기 중단·젠쿤 재가동, 차주 '), R('+' + F.util.fc + '%p 예상', { color: UP })],
-    '※ 가동 중단 유지: 치샹 1개 라인·중허·룽신·스얼방 2개 라인·후이저우 미쓰비시 / 차주 젠쿤 재가동 후 부하 상향 시 업종 가동률 ' + (og[1] + F.util.fc) + '%(계산)'));
+    '※ 중단 유지: 치샹 1라인·중허·룽신·스얼방 2라인·후이저우 미쓰비시 / 차주 젠쿤 재가동·부하 상향 시 가동률 ' + (og[1] + F.util.fc) + '%(계산)'));
   kpiRow(pf, 1.43, [
     { t: 'MMA 가동률', v: rtx(og[1]) + '%', sub: rateSubMM(0) },
     { t: '표2 설비능력 합계 (만 톤/년)', v: fmt(tot, 0), sub: [R(PLANTS.length + '개 설비 합계(집계)', { size: 7.8, color: COL.mute })] },
@@ -1395,7 +1395,7 @@ function slidePlants() {
   const B = mdBullets(/^#### 2\.1/), bt = mdBoldLines(/^#### 2\.1/), og = G('o_MM').rows[0].v;
   const tot = round1(PLANTS.reduce((a, p) => a + p.cap, 0));
   out.push(msgBox(pf, [R('□ 23개 설비 ' + fmt(tot, 0) + '만 톤/년 — 가동 중단 3개·일부 중단 2개, 업종 가동률 '), R(rtx(og[1]) + '%', { color: UP })],
-    '※ 원문 표2 "가동 상황" 그대로 (붉은색 변동 표시는 PDF 텍스트에 없음 → 부록 B-5) · 중단·정기보수는 파랑, 재가동은 빨강'));
+    '※ 원문 표2 "가동 상황" 그대로 (붉은색 변동 표시는 PDF 텍스트에 없음 → 부록 B-5) · 중단·정기보수 파랑, 재가동 빨강'));
   const t2 = tblBlock(pf + '.a', LX, 1.43, FW, '①', bt[0].replace(/\*\*/g, ''), '(원문 p.3~4)', zhOff(mdTbl(/^#### 2\.1/, 0)), [2.3, 0.8, 1.15, 1.1, 4.09],
     { sz: 7.6, al: ['l', 'l', 'r', 'c', 'l'], minH: 0.195, first: true, mar: [0.01, 0.04, 0.01, 0.04],
       colorFn: (t, ci) => (ci === 4 ? (/가동 중단|정기보수/.test(t) ? DN : (/재가동$/.test(t) ? UP : null)) : null) }, 1, B[1]);
@@ -1409,7 +1409,7 @@ function slideDemand() {
   const pf = 's3', out = hdr(pf, '2.2 본주 국내 수요 분석 (PMMA · 에멀션)');
   const B = mdBullets(/^#### 2\.2/), bt = mdBoldLines(/^#### 2\.2/), qg = G('q_MM').rows;
   const pc = qg.map(r => pctOf(r.v[0], r.v[1])), dv = qg.map(r => r.v[1] - r.v[0]);
-  out.push(msgBox(pf, [R('□ PMMA 화동 주평균 ' + fmt(qg[0].v[1], 0) + ' '), R(pctTxt(pc[0]), { color: dirCol(dv[0]) }), R(' · 아크릴 에멀션 3종 '), R(pctTxt(pc[3]) + '~' + pctTxt(pc[2]), { color: dirCol(dv[1]) }), R(' — 원가 지지 약화·비수기')],
+  out.push(msgBox(pf, [R('□ PMMA 화동 주평균 ' + fmt(qg[0].v[1], 0) + ' '), R(pctTxt(pc[0]), { color: dirCol(dv[0]) }), R('·아크릴 에멀션 '), R(pctTxt(pc[3]).replace('%', '') + '~' + pctTxt(pc[2]), { color: dirCol(dv[1]) }), R(' — 원가 지지 약화·비수기')],
     '※ PMMA 국산 입자 11/19 13,800~14,500위안/톤 · 에멀션 공장 호가는 조정 없었으나 실거래는 유연 협상 (번역본 2.2절)'));
   kpiRow(pf, 1.43, qg.map((r, i) => ({ t: r.label + ' 주평균', v: fmt(r.v[1], 0), sub: subRuns('전주 ' + fmt(r.v[0], 0) + '(역산)', dv[i], pc[i], 0) })), 1).forEach(k => out.push(k));
   out.push(cardText(pf + '.c1', LX, 2.29, CWID, 2.75, '①', 'PMMA', '(원문 p.4)', [pl(B[0])], 2, { size: 9.5 }));
@@ -1477,7 +1477,7 @@ function slideOutlook1() {
   const pf = 's5a', out = hdr(pf, '4. 차주 시장 전망 (1) 가격·요인');
   const B = mdBullets(/^### 4\./), bt = mdBoldLines(/^### 4\./), f = G('f_MM').rows[0].v, v0 = pv(MAIN), fd = f[2] - v0[1], F = FUND, og = G('o_MM').rows[0].v;
   out.push(msgBox(pf, [R('□ 차주 MMA 가격 ' + F.fc.word + ' — 화동 1급 ' + fmt(f[0], 0) + '~' + fmt(f[1], 0) + ' / 평균 '), R(fmt(f[2], 0), { color: dirCol(fd) }), R(' (본주比 ' + arrowTxt(fd, 0) + ')', { color: dirCol(fd) })],
-    '※ 공급 중립 소폭 약세(★★★★)·수요 중립(★★★)·원가 중립(★★)·심리 중립(★★★) — 중동 정세 변화 주시 (번역본 4절 표4)'));
+    '※ 공급 중립 소폭 약세(★★★★)·수요 중립(★★★)·원가 중립(★★)·심리 중립(★★★) — 중동 정세 주시 (번역본 4절)'));
   const t7 = zhOff(mdTbl(/^### 4\./, 0));
   const k1 = tblBlock(pf + '.a', LX, 1.43, CWID, '①', bt[0].replace(/\*\*/g, ''), B[0], t7, [0.5, 2.45, 0.65, 0.95],
     { sz: 7.4, al: ['l', 'l', 'c', 'c'], first: true, minH: 0.28, colorFn: (t, ci, ri) => (ci === 3 && ri > 0 ? dirWordCol(t) : null) }, 1);
@@ -1551,7 +1551,7 @@ function slideOutlook2() {
 function slideMethod() {
   const pf = 's67', out = hdr(pf, '5. 방법론 · 6. 성명');
   const B6 = mdBullets(/^### 5\./), B7 = mdBullets(/^### 6\./);
-  out.push(msgBox(pf, [R('□ 주평균가 = 지난 금~이번 주 목 일별 종가 산술평균 — '), R('MMA 가동률 샘플 22개 기업·커버리지 100%', { color: UP })],
+  out.push(msgBox(pf, [R('□ 주평균가 = 금~목 종가 산술평균 — '), R('MMA 가동률 샘플 22개 기업·커버리지 100%', { color: UP })],
     '※ 원문 p.6~7 방법론·성명 (번역본 5·6절 문장 그대로) · 2026-01-01 화동 1급·무역 시장가 방법론 조정 포함'));
   out.push(cardText(pf + '.c1', LX, 1.43, CWID, 5.69, '①', '5. 방법론', '(五、方法论)', B6.map(s => bl(s, { sz: 8.9 })), 1, { size: 8.9 }));
   out.push(cardText(pf + '.c2', RX, 1.43, CWID, 5.69, '②', '6. 성명', '(六、声明)', B7.map(s => pl(s, { sz: 8.4 })), 2, { size: 8.4 }));

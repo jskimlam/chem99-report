@@ -1569,7 +1569,7 @@ function slideStock() {
   const e = sg[0].v, ep = pctOf(e[0], e[1]);
   const tot = [0, 1, 2].map(c => ag.reduce((s2, r) => s2 + (r.v[c] || 0), 0));                   // 입항 합계 [전주, 본주, 차주 예상]
   const tp = pctOf(tot[0], tot[1]);
-  out.push(msgBox(pf, [R('□ 화동 주항 재고 ' + fmt(e[1], 2) + '만 톤 '), R(pctTxt(ep), { color: dirCol(ep) }), R(' — 입항 ' + fmt(tot[1], 0) + '톤(' + pctTxt(tp) + ') < 출고, '), R('차주 입항 ' + fmt(tot[2], 0) + '톤 예상', { color: UP })],
+  out.push(msgBox(pf, [R('□ 화동 주항 재고 ' + fmt(e[1], 2) + '만 톤 '), R(pctTxt(ep), { color: dirCol(ep) }), R(' — 입항 ' + fmt(tot[1], 0) + '톤(' + pctTxt(tp) + ') < 출고, '), R('차주 입항 ' + fmt(tot[2], 0) + '톤', { color: UP })],
     '※ 차주는 입항 예정 4.8만 톤·출고 강성 유지로 소폭 재고 누적 가능 (번역본 2.2·2.3)'));
   out.push(cardText(pf + '.c1', LX, 1.43, CWID, 1.4, '①', '2.2 항구 재고 통계', '(원문 p.5)', [pl(B2[0])], 1, { size: 8.4 }));
   out.push(cardHead(pf + '.c2', LX, 2.9, CWID, 1.72, '②', '표3 SM 항구 재고 통계', '(단위: 만 톤 · 출처: 탁창자쉰)', 2));
@@ -1706,7 +1706,7 @@ function slideOutlook1() {
   const pf = 's5a', out = hdr(pf, '5. 차주 시장 전망 (1) 가격·요인');
   const B = mdBullets(/^### 5\./), f = G('f_SM').rows[0].v, v0 = pv(0), fd = f[2] - v0[1];
   out.push(msgBox(pf, [R('□ 차주 SM ' + FUND.fc.word + ' — 장쑤 ' + fmt(f[0], 0) + '~' + fmt(f[1], 0) + ' / 평균 '), R(fmt(f[2], 0), { color: dirCol(fd) }), R(' (본주比 ' + arrowTxt(fd, 0) + ')', { color: dirCol(fd) })],
-    '※ 수요(★5) 강세 요인이 공급(★3)·원가(★4) 약세 요인을 상쇄 — 수급은 강세이나 베이시스·원가 압박으로 소폭 하락 (번역본 5절)'));
+    '※ 수요(★5) 강세가 공급(★3)·원가(★4) 약세를 상쇄 — 수급 강세이나 베이시스·원가 압박에 소폭 하락 (번역본 5절)'));
   const t7 = mdTbl(/^### 5\./, 0);
   out.push(cardHead(pf + '.c1', LX, 1.43, CWID, 2.78, '①', '표7 주요 영향 요인 분석표', '(출처: 탁창자쉰)', 1));
   out.push(srcTable(pf + '.t1', LX + 0.08, 1.73, t7, [0.95, 2.0, 0.75, 0.86], { sz: 7.4, al: ['l', 'l', 'c', 'c'], first: true, colorFn: (t, ci, ri) => (ci === 3 || (ci === 1 && ri === 1) ? (ci === 3 ? dirWordCol(t) : null) : null), s: 1, minH: 0.3 }));
@@ -1785,7 +1785,7 @@ function slideNewCap() {
   const pf = 's5c', out = hdr(pf, '5. 표8 2027년 신설 예정 설비');
   const B = mdBullets(/^### 5\./), t8 = mdTbl(/^### 5\./, 1);
   out.push(msgBox(pf, [R('□ 신설 예정 설비 합계 ' + t8[t8.length - 1][1].t + '만 톤/년 — '), R('화진 아람코 70·룽성신소재 60 2027년 2분기', { color: UP })],
-    '※ 궈언화학 20만 톤은 기술 개조 후 2026년 11월 중순 원료 투입·하순 합격품 생산 예정 · 표 제목과 서술 연도 불일치는 원문 상충으로 기록'));
+    '※ 궈언화학 20만 톤: 개조 후 2026년 11월 중순 원료 투입·하순 합격품 생산 예정 · 표 제목·서술 연도 불일치(원문 상충)'));
   const cw = [2.5, 0.55, 0.95, 0.95, 1.05, 3.5];
   const tbl = srcTable(pf + '.t1', LX + 0.08, 1.73, t8, cw, { sz: 7.4, al: ['l', 'r', 'c', 'c', 'c', 'l'], first: true, s: 1, minH: 0.26 });
   const th = tblH(tbl);
@@ -1837,7 +1837,7 @@ function slideFactory() {
 function slideMethod() {
   const pf = 's67', out = hdr(pf, '6. 방법론 · 7. 성명');
   const B6 = mdBullets(/^### 6\./), B7 = mdBullets(/^### 7\./);
-  out.push(msgBox(pf, [R('□ 주평균가 = 지난 금~이번 주 목 일별 종가 산술평균 — '), R('주항 재고는 수요일 데이터', { color: UP })],
+  out.push(msgBox(pf, [R('□ 주평균가 = 금~목 종가 산술평균 — '), R('주항 재고는 수요일 데이터', { color: UP })],
     '※ 원문 p.12~14 방법론·성명 (번역본 6·7절 문장 그대로) · 표준 물량은 표로 정리'));
   const plain = [0, 1, 2, 3, 13, 14, 15, 16].map(i => bl(B6[i], { sz: 7.3 }));
   out.push(cardText(pf + '.c1', LX, 1.43, CWID, 3.95, '①', '6. 방법론', '(六、方法论)', plain, 1, { size: 7.3 }));
@@ -1902,7 +1902,7 @@ function slideOutA1() {
   const pf = 'a1', out = hdr(pf, '별첨 A 국내 SM 정기보수 현황');
   const st = outageStat(), ix = outageIdx();
   const stopNow = st.S.cap + st.P.cap;
-  out.push(msgBox(pf, [R('□ 표2 국내 정기보수·중단 ' + OUTAGES.length + '건 (해당 능력 합계 ' + f1(st.all) + '만 톤/년) — '), R('11월 신규 정지 2건 · 재가동 보도 3건', { color: UP })],
+  out.push(msgBox(pf, [R('□ 표2 국내 정기보수·중단 ' + OUTAGES.length + '건 (합계 ' + f1(st.all) + '만 톤/년) — '), R('11월 신규 정지 2건 · 재가동 보도 3건', { color: UP })],
     '※ 중단 시점·재가동 시점은 월 단위로 표시(원문 일자 서술 기준) · 간트·월별 합계는 표2에서 집계한 값으로 원문 수치 아님'));
   kpiRow(pf, 1.43, [
     { t: '중단 중 · 재가동 미정 (만 톤/년)', v: f1(st.S.cap), sub: [R(st.S.n + '건 (집계)  ', { size: 8, color: COL.mute }), R('장기 중단 ' + ix.old.length + '건 포함', { size: 8, color: COL.mute })] },
@@ -2028,7 +2028,7 @@ function slideOutB1() {
   const sp = t10Split(), wr = weekRates(), tot = numOf(sp.total[3].t);
   const ctry = {}; sp.closed.forEach(r => { ctry[r[0].t] = (ctry[r[0].t] || 0) + numOf(r[3].t); });
   const ck = Object.keys(ctry).sort((a, b) => ctry[b] - ctry[a]), top = ck[0];
-  out.push(msgBox(pf, [R('□ 중국 대륙 외 폐쇄·가동 중단 ' + sp.closed.length + '건 합계 ' + fmt(tot, 1) + '만 톤/년 — '), R('주간 가동률 일본 ' + wr.jp + '% · 타이완 ' + wr.tw + '% · 한국 ' + wr.kr + '%', { color: UP })],
+  out.push(msgBox(pf, [R('□ 대륙 외 폐쇄·중단 ' + sp.closed.length + '건 ' + fmt(tot, 1) + '만 톤/년 — '), R('주간 가동률 일본 ' + wr.jp + '% · 타이완 ' + wr.tw + '% · 한국 ' + wr.kr + '%', { color: UP })],
     '※ 표10 원문 순서·문구 그대로 · 폐쇄 합계 최대 국가는 ' + top + ' ' + f1(ctry[top]) + '만 톤(집계) · 가동·정기보수 설비는 다음 쪽부터'));
   kpiRow(pf, 1.43, [
     { t: '폐쇄·가동 중단 설비 합계 (만 톤/년)', v: fmt(tot, 1), sub: [R('원문 합계 (' + sp.closed.length + '건)', { size: 8, color: COL.mute })] },
@@ -2071,7 +2071,7 @@ function slideOutB2() {
   const pf = 'b2', o = operSlide(pf, '별첨 B 해외 SM 정기보수 현황 (2)', Array.from({ length: 18 }, (_, i) => i));
   const out = o.out, loads = o.rows.map(r => loadOf(r[4].t)).filter(v => v !== null);
   out.push(msgBox(pf, [R('□ 일본·중국 타이완·한국 가동·정기보수 18건 — '), R('명시 부하 ' + loads.length + '건 평균 ' + fmt(loads.reduce((a, b) => a + b, 0) / loads.length, 0) + '% (집계)', { color: UP })],
-    '※ 표10 원문 순서·문구 그대로 · 부하(원문) 열은 상태 서술에서 읽은 값(풀가동=100%, 서술 없으면 -) · 진할수록 높은 부하'));
+    '※ 표10 원문 순서·문구 그대로 · 부하(원문) 열은 상태 서술에서 읽은 값(풀가동=100%, 서술 없으면 -) · 진할수록 고부하'));
   out.push(cardHead(pf + '.c1', LX, 1.43, FW, 0.3 + tblH(o.tbl) + 0.1, '①', '표10 가동·정기보수 설비 — 일본 · 중국 타이완 · 한국', '(단위: 만 톤/년 · 출처: 탁창자쉰)', 1));
   out.push(o.tbl);
   const used = 1.43 + 0.3 + tblH(o.tbl) + 0.1, rest = 7.12 - used - 0.06;                                // 표 아래 남은 높이
@@ -2089,7 +2089,7 @@ function slideOutB2() {
 function slideOutB3() {
   const pf = 'b3', o = operSlide(pf, '별첨 B 해외 SM 정기보수 현황 (3)', Array.from({ length: 17 }, (_, i) => i + 18));
   const out = o.out, bl2 = mdBullets(/^### 5\./);
-  out.push(msgBox(pf, [R('□ 싱가포르·태국·말레이시아·미국·중동·유럽 등 ' + o.rows.length + '건 — '), R('중동 설비 3곳 3~4월 가동 중단·공격 보도', { color: UP })],
+  out.push(msgBox(pf, [R('□ 싱가포르·태국·말레이시아·미국·중동·유럽 등 ' + o.rows.length + '건 — '), R('중동 3곳 3~4월 가동 중단·공격 보도', { color: UP })],
     '※ 표10 원문 순서·문구 그대로 · 중동 SM 설비 불가항력·피해 불명 서술은 원문 그대로(번역본 5절 표10)'));
   out.push(cardHead(pf + '.c1', LX, 1.43, FW, 0.3 + tblH(o.tbl) + 0.1, '①', '표10 가동·정기보수 설비 — 그 밖의 국가', '(단위: 만 톤/년 · 출처: 탁창자쉰)', 1));
   out.push(o.tbl);

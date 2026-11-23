@@ -1553,7 +1553,7 @@ function slideOutlook2() {
 function slideMethod() {
   const pf = 's78', out = hdr(pf, '7. 방법론 · 8. 성명');
   const B7 = mdBullets(/^### 7\./), B8 = mdBullets(/^### 8\./);
-  out.push(msgBox(pf, [R('□ 주평균가 = 지난 금~이번 주 목 일별 종가 산술평균 — '), R('샘플 커버리지 100% (재고 10·BD 43·BR 17·SBR 11)', { color: UP })],
+  out.push(msgBox(pf, [R('□ 주평균가 = 금~목 종가 산술평균 — '), R('샘플 커버리지 100% (재고 10·BD 43·BR 17·SBR 11)', { color: UP })],
     '※ 원문 p.7~9 방법론·성명 (번역본 7·8절 문장 그대로) · 면책·리스크·지식재산권 성명 포함'));
   out.push(cardText(pf + '.c1', LX, 1.43, CWID, 5.69, '①', '7. 방법론', '(七、方法论)', B7.map(s => bl(s, { sz: 6.8 })), 1, { size: 6.8 }));
   const dis = [lead('', B8[0].replace(/\*\*/g, ''), '000000').slice(1)].concat([1, 2].map(i => pl(B8[i])), [lead('', B8[3].replace(/\*\*/g, ''), '000000').slice(1)], [4, 5, 6].map(i => pl(B8[i])),
